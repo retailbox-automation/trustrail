@@ -1,0 +1,40 @@
+{
+ "at": "2026-11-09T19:50Z",
+ "renderer": "image-first-ui render.js (Playwright Chromium, 1920x1080, deviceScaleFactor 1)",
+ "compare_script": "image-first-ui compare_to_image.py (edgeF1 at 960 px with ±2 px tolerance; lumaMAE at 240 px)",
+ "data": "offline demo ledger (trustrail demo --seed), console served by trustrail web; demo badge shown",
+ "states": {
+  "stopped": {
+   "reference": "ui-trustrail-console/html-C/shots/variant-C-v4.png (main clone docs/2026-11-09-c-awx)",
+   "render": "console-stopped.png",
+   "edgeF1": 0.996,
+   "lumaMAE": 0.1,
+   "dom_check": {
+    "wrappedNumbers": 0,
+    "clipped": 0,
+    "cardOverlaps": 0,
+    "width": 1920,
+    "height": 1080
+   }
+  },
+  "card": {
+   "reference": "ui-trustrail-console/html-C/shots/variant-C-card-v4.png (main clone docs/2026-11-09-c-awx)",
+   "render": "console-card.png",
+   "edgeF1": 0.995,
+   "lumaMAE": 0.2,
+   "dom_check": {
+    "wrappedNumbers": 0,
+    "clipped": 0,
+    "cardOverlaps": 0,
+    "width": 1920,
+    "height": 1080
+   }
+  }
+ },
+ "known_differences": [
+  "demo badge text and colour (visible demo label, round 4)",
+  "checks title in demo wording",
+  "real plan digest instead of the design placeholder",
+  "reviewer toggle absent (only with ?review=1)"
+ ]
+}

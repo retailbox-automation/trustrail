@@ -1,0 +1,21 @@
+{
+  "base": "https://api-demo.airwallex.com/api/v1",
+  "test_money_only": true,
+  "gbp_fx": "PASS_CONVERTED_AND_SUBMITTED_NOT_SETTLED",
+  "cny_card": "PASS",
+  "simulation": "PASS",
+  "account_id": "acct_MASKED",
+  "conversion_id": "24306d49-115e-4999-be09-fc3bbca7e801",
+  "gbp_transfer_id": "f9537d93-c5ba-494b-ba5d-c7f088a5a4da",
+  "gbp_request_id": "7eee7df9-c46f-4720-8163-26caf79c6427",
+  "gbp_status": "PROCESSING",
+  "cny_card_id": "e073ee9e-be44-4b56-9624-44d5bb4c7e62",
+  "cny_checks": [
+    true,
+    true,
+    true
+  ],
+  "cny_cleanup": "CLOSED",
+  "old_transfer_status": "SENT",
+  "at": "2026-11-09T15:34:19.430901+00:00"
+}

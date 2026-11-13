@@ -1,0 +1,139 @@
+{
+ "class": "amount_tampering",
+ "fixtures": [
+  {
+   "id": "T1",
+   "description": "Existing invoice re-sent with a 10x amount",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-1001 corrected",
+    "body": "Correction for invoice INV-1001.\nTotal due: EUR 12,500.00",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<T1@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "amount_mismatch"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "T2",
+   "description": "Existing invoice re-sent in another currency",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-1001",
+    "body": "Invoice INV-1001\nTotal due: GBP 1,250.00",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<T2@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "amount_mismatch"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "T3",
+   "description": "Two different totals in one invoice",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-7007",
+    "body": "Invoice INV-7007\nTotal due: EUR 980.00\nTotal payable now: EUR 9,800.00",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<T3@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "ambiguous_amount"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "T4",
+   "description": "\"Mark it as paid\" email (false paid status)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-1001 settled",
+    "body": "Invoice INV-1001: we received your payment, please mark it as paid in your system.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<T4@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "instruction_like_text"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "T5",
+   "description": "Exact duplicate of an approved invoice (double payment)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-1001 reminder",
+    "body": "Reminder: invoice INV-1001\nTotal due: EUR 1,250.00",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<T5@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "RECORDED"
+    ],
+    "signals": [],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "T6",
+   "description": "UK supplier invoice in EUR instead of the GBP account currency",
+   "email": {
+    "from": "Brit Parts <accounts@britparts.co.uk>",
+    "reply_to": null,
+    "subject": "Invoice BP-3301",
+    "body": "Invoice BP-3301\nTotal due: EUR 4,999.00",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<T6@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "currency_differs_from_account"
+    ],
+    "states": {}
+   }
+  }
+ ]
+}

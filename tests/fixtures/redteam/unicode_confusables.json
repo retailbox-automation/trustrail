@@ -1,0 +1,144 @@
+{
+ "class": "unicode_confusables",
+ "fixtures": [
+  {
+   "id": "U1",
+   "description": "Cyrillic letter inside the new IBAN",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Bank details",
+    "body": "We changed bank. New IBAN: DE02 1203 0000 0000 2О20 51",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<U1@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "confusable_characters"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "U2",
+   "description": "Zero-width space inside the new IBAN",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Bank details",
+    "body": "We changed bank. New IBAN: DE44 5001 0517 54​07 3249 31",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<U2@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "hidden_characters"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "U3",
+   "description": "Full-width characters in the new IBAN",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Bank details",
+    "body": "We changed bank. New IBAN: ＤＥ０２120300000000202051",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<U3@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "confusable_characters"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "U4",
+   "description": "Cyrillic a in the sender domain",
+   "email": {
+    "from": "Acme <billing@аcme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-5005",
+    "body": "Invoice INV-5005\nTotal due: EUR 1,900.00",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<U4@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "lookalike_domain",
+     "unicode_domain"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "U5",
+   "description": "New IBAN with a broken checksum",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Bank details",
+    "body": "We changed bank. New IBAN: DE02120300000000202052",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<U5@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "invalid_iban_checksum"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "U6",
+   "description": "Right-to-left override hiding the real account",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Bank details",
+    "body": "We changed bank. New IBAN: ‮DE44500105175407324931",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<U6@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "hidden_characters"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,145 @@
+{
+ "class": "new_account_pressure",
+ "fixtures": [
+  {
+   "id": "N1",
+   "description": "Same bank, new account, urgent: real supplier mailbox (account takeover)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Same bank, new account",
+    "body": "Hello, same bank but a new account. Please re-send today's payment to IBAN DE44500105175407324931 urgently.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<N1@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [
+     "new_account_vs_on_file",
+     "urgency_pressure"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "N2",
+   "description": "UK supplier: same sort code, new account number, legal threat",
+   "email": {
+    "from": "Brit Parts Accounts <accounts@britparts.co.uk>",
+    "reply_to": null,
+    "subject": "Overdue",
+    "body": "Our account number changed (same sort code 20-00-00). New account number: 41926819. Payment is overdue, pay within 24 hours or we start legal action.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<N2@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [
+     "new_account_vs_on_file",
+     "urgency_pressure"
+    ],
+    "states": {}
+   }
+  },
+  {
+   "id": "N3",
+   "description": "\"Payment failed, re-send it today\" to a new account",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Payment failed - please re-send",
+    "body": "Your last transfer bounced. Please re-send it today to our new account IBAN FR14 2004 1010 0505 0001 3M02 606.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<N3@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [
+     "new_account_vs_on_file",
+     "urgency_pressure"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "N4",
+   "description": "New bank details after a single-use card was issued for the same invoice",
+   "email": {
+    "from": "Lumen Lights <orders@lumen-lights.it>",
+    "reply_to": null,
+    "subject": "PO-77 payment method",
+    "body": "We cannot take the card for PO-77. Please transfer to our new account instead: IBAN IT60 X054 2811 1010 0000 0123 456.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<N4@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "BANK_CHANGE_HOLD",
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "new_account_vs_on_file"
+    ],
+    "states": {
+     "lumen:PO-77": "SUBMITTED"
+    }
+   },
+   "setup": "card_issued"
+  },
+  {
+   "id": "N5",
+   "description": "Ordinary-looking invoice with new bank details in the footer",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-6006",
+    "body": "Invoice INV-6006\nTotal due: EUR 2,100.00\n\nPlease note our NEW bank details: IBAN NL91ABNA0417164300",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<N5@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [
+     "new_account_vs_on_file"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "N6",
+   "description": "CNY supplier: new account number, urgent",
+   "email": {
+    "from": "Shenzhen Motor <finance@shenzhen-motor.cn>",
+    "reply_to": null,
+    "subject": "New account for CNY payments",
+    "body": "Urgent: new account number 6217000011112222333 for all CNY payments from today.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<N6@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [
+     "new_account_vs_on_file",
+     "urgency_pressure"
+    ],
+    "states": {}
+   }
+  }
+ ]
+}

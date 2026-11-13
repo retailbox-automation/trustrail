@@ -1,0 +1,673 @@
+{
+ "config": {
+  "http": 200,
+  "body": {
+   "_keys": [
+    "blocked_transaction_usages",
+    "enable_auto_conversion",
+    "primary_currency",
+    "spending_limit_settings"
+   ]
+  }
+ },
+ "cardholder": {
+  "http": 400,
+  "body": {
+   "code": "bad_request",
+   "message": "The given email or mobile number is already associated with a cardholder.",
+   "source": "",
+   "_keys": [
+    "code",
+    "message",
+    "source"
+   ]
+  }
+ },
+ "cardholder_reused": "c7a96570-3b4b-4842-82ff-20a8dce46e10",
+ "card_eur": {
+  "http": 202,
+  "body": {
+   "card_id": "087efbba-2170-4d15-852b-fcc5a9e92e2c",
+   "card_status": "ACTIVE",
+   "authorization_controls": {
+    "allowed_currencies": [
+     "EUR"
+    ],
+    "allowed_merchant_brands": {
+     "categories": [],
+     "ids": [],
+     "subcategories": []
+    },
+    "allowed_merchant_categories": [],
+    "allowed_merchant_countries": [],
+    "allowed_transaction_count": "SINGLE",
+    "blocked_transaction_usages": [],
+    "transaction_limits": {
+     "currency": "EUR",
+     "limits": [
+      {
+       "amount": 5000,
+       "interval": "PER_TRANSACTION"
+      },
+      {
+       "amount": 5000,
+       "interval": "ALL_TIME"
+      }
+     ]
+    }
+   },
+   "cardholder_id": "c7a96570-3b4b-4842-82ff-20a8dce46e10",
+   "_keys": [
+    "alert_settings",
+    "authorization_controls",
+    "brand",
+    "card_id",
+    "card_number",
+    "card_status",
+    "cardholder_id",
+    "created_at",
+    "created_by",
+    "form_factor",
+    "is_personalized",
+    "metadata",
+    "name_on_card",
+    "program",
+    "purpose",
+    "request_id",
+    "updated_at"
+   ]
+  }
+ },
+ "card_eur_status": {
+  "card_id": "087efbba-2170-4d15-852b-fcc5a9e92e2c",
+  "card_status": "ACTIVE",
+  "authorization_controls": {
+   "allowed_currencies": [
+    "EUR"
+   ],
+   "allowed_merchant_brands": {
+    "categories": [],
+    "ids": [],
+    "subcategories": []
+   },
+   "allowed_merchant_categories": [],
+   "allowed_merchant_countries": [],
+   "allowed_transaction_count": "SINGLE",
+   "blocked_transaction_usages": [],
+   "transaction_limits": {
+    "currency": "EUR",
+    "limits": [
+     {
+      "amount": 5000.0,
+      "interval": "PER_TRANSACTION"
+     },
+     {
+      "amount": 5000.0,
+      "interval": "ALL_TIME"
+     }
+    ]
+   }
+  },
+  "cardholder_id": "c7a96570-3b4b-4842-82ff-20a8dce46e10",
+  "_keys": [
+   "alert_settings",
+   "all_card_versions",
+   "authorization_controls",
+   "brand",
+   "card_id",
+   "card_number",
+   "card_status",
+   "card_version",
+   "cardholder_id",
+   "created_at",
+   "created_by",
+   "delivery_details",
+   "form_factor",
+   "is_personalized",
+   "metadata",
+   "name_on_card",
+   "program",
+   "purpose",
+   "request_id",
+   "updated_at"
+  ]
+ },
+ "eur_over_limit_5000_01": {
+  "http": 201,
+  "body": {
+   "card_id": "087efbba-2170-4d15-852b-fcc5a9e92e2c",
+   "failure_reason": "LIMIT_EXCEEDED",
+   "type": "AUTHORIZATION",
+   "subtype": "AUTHORIZATION",
+   "process_result": "DECLINED",
+   "card_transaction_id": "01a159e0-c16a-7000-bc76-4135e3dc6602",
+   "merchant": {
+    "name": "AIRPRO_TX_GENERATOR",
+    "city": "A_CITY_NAME",
+    "country": "AUS",
+    "category_code": "7531"
+   },
+   "transaction_amount": 5000.01,
+   "transaction_currency": "EUR",
+   "billing_amount": 5000.01,
+   "billing_currency": "EUR",
+   "_keys": [
+    "auth_code",
+    "billing_amount",
+    "billing_currency",
+    "card_id",
+    "card_transaction_event_id",
+    "card_transaction_id",
+    "card_transaction_lifecycle_id",
+    "failure_reason",
+    "masked_card_number",
+    "merchant",
+    "network_transaction_id",
+    "process_result",
+    "retrieval_ref",
+    "subtype",
+    "transacted_at",
+    "transaction_amount",
+    "transaction_currency",
+    "type",
+    "updated_at"
+   ]
+  }
+ },
+ "eur_wrong_currency_usd_100": {
+  "http": 201,
+  "body": {
+   "card_id": "087efbba-2170-4d15-852b-fcc5a9e92e2c",
+   "failure_reason": "CURRENCY_NOT_ALLOWED",
+   "type": "AUTHORIZATION",
+   "subtype": "AUTHORIZATION",
+   "process_result": "DECLINED",
+   "card_transaction_id": "01a159e0-d0e5-7000-8308-4121c3d893e1",
+   "merchant": {
+    "name": "AIRPRO_TX_GENERATOR",
+    "city": "A_CITY_NAME",
+    "country": "AUS",
+    "category_code": "7531"
+   },
+   "transaction_amount": 100,
+   "transaction_currency": "USD",
+   "billing_amount": 100,
+   "billing_currency": "USD",
+   "_keys": [
+    "auth_code",
+    "billing_amount",
+    "billing_currency",
+    "card_id",
+    "card_transaction_event_id",
+    "card_transaction_id",
+    "card_transaction_lifecycle_id",
+    "failure_reason",
+    "masked_card_number",
+    "merchant",
+    "network_transaction_id",
+    "process_result",
+    "retrieval_ref",
+    "subtype",
+    "transacted_at",
+    "transaction_amount",
+    "transaction_currency",
+    "type",
+    "updated_at"
+   ]
+  }
+ },
+ "eur_exact_5000": {
+  "http": 201,
+  "body": {
+   "card_id": "087efbba-2170-4d15-852b-fcc5a9e92e2c",
+   "type": "AUTHORIZATION",
+   "subtype": "AUTHORIZATION",
+   "process_result": "APPROVED",
+   "card_transaction_id": "01a159e0-df0d-7000-8a57-3b6769d91c34",
+   "merchant": {
+    "name": "AIRPRO_TX_GENERATOR",
+    "city": "A_CITY_NAME",
+    "country": "AUS",
+    "category_code": "7531"
+   },
+   "transaction_amount": 5000,
+   "transaction_currency": "EUR",
+   "billing_amount": 5000,
+   "billing_currency": "EUR",
+   "_keys": [
+    "auth_code",
+    "billing_amount",
+    "billing_currency",
+    "card_id",
+    "card_transaction_event_id",
+    "card_transaction_id",
+    "card_transaction_lifecycle_id",
+    "masked_card_number",
+    "merchant",
+    "network_transaction_id",
+    "process_result",
+    "retrieval_ref",
+    "subtype",
+    "transacted_at",
+    "transaction_amount",
+    "transaction_currency",
+    "type",
+    "updated_at"
+   ]
+  }
+ },
+ "eur_status_after_exact": {
+  "card_id": "087efbba-2170-4d15-852b-fcc5a9e92e2c",
+  "card_status": "ACTIVE",
+  "authorization_controls": {
+   "allowed_currencies": [
+    "EUR"
+   ],
+   "allowed_merchant_brands": {
+    "categories": [],
+    "ids": [],
+    "subcategories": []
+   },
+   "allowed_merchant_categories": [],
+   "allowed_merchant_countries": [],
+   "allowed_transaction_count": "SINGLE",
+   "blocked_transaction_usages": [],
+   "transaction_limits": {
+    "currency": "EUR",
+    "limits": [
+     {
+      "amount": 5000.0,
+      "interval": "PER_TRANSACTION"
+     },
+     {
+      "amount": 5000.0,
+      "interval": "ALL_TIME"
+     }
+    ]
+   }
+  },
+  "cardholder_id": "c7a96570-3b4b-4842-82ff-20a8dce46e10",
+  "_keys": [
+   "alert_settings",
+   "all_card_versions",
+   "authorization_controls",
+   "brand",
+   "card_id",
+   "card_number",
+   "card_status",
+   "card_version",
+   "cardholder_id",
+   "created_at",
+   "created_by",
+   "delivery_details",
+   "form_factor",
+   "is_personalized",
+   "metadata",
+   "name_on_card",
+   "program",
+   "purpose",
+   "request_id",
+   "updated_at"
+  ]
+ },
+ "eur_second_use_10": {
+  "http": 201,
+  "body": {
+   "card_id": "087efbba-2170-4d15-852b-fcc5a9e92e2c",
+   "failure_reason": "LIMIT_EXCEEDED",
+   "type": "AUTHORIZATION",
+   "subtype": "AUTHORIZATION",
+   "process_result": "DECLINED",
+   "card_transaction_id": "01a159e0-f07d-7000-a063-bed887c42cc8",
+   "merchant": {
+    "name": "AIRPRO_TX_GENERATOR",
+    "city": "A_CITY_NAME",
+    "country": "AUS",
+    "category_code": "7531"
+   },
+   "transaction_amount": 10,
+   "transaction_currency": "EUR",
+   "billing_amount": 10,
+   "billing_currency": "EUR",
+   "_keys": [
+    "auth_code",
+    "billing_amount",
+    "billing_currency",
+    "card_id",
+    "card_transaction_event_id",
+    "card_transaction_id",
+    "card_transaction_lifecycle_id",
+    "failure_reason",
+    "masked_card_number",
+    "merchant",
+    "network_transaction_id",
+    "process_result",
+    "retrieval_ref",
+    "subtype",
+    "transacted_at",
+    "transaction_amount",
+    "transaction_currency",
+    "type",
+    "updated_at"
+   ]
+  }
+ },
+ "eur_details_pci": {
+  "http": 200,
+  "body": {
+   "_keys": [
+    "card_number",
+    "cvv",
+    "expiry_month",
+    "expiry_year",
+    "name_on_card"
+   ]
+  }
+ },
+ "card_cny": {
+  "http": 202,
+  "body": {
+   "card_id": "deee9af9-c0b8-4988-88dc-6e83551bd3bd",
+   "card_status": "ACTIVE",
+   "authorization_controls": {
+    "allowed_currencies": [
+     "CNY"
+    ],
+    "allowed_merchant_brands": {
+     "categories": [],
+     "ids": [],
+     "subcategories": []
+    },
+    "allowed_merchant_categories": [],
+    "allowed_merchant_countries": [],
+    "allowed_transaction_count": "SINGLE",
+    "blocked_transaction_usages": [],
+    "transaction_limits": {
+     "currency": "CNY",
+     "limits": [
+      {
+       "amount": 30000,
+       "interval": "PER_TRANSACTION"
+      },
+      {
+       "amount": 30000,
+       "interval": "ALL_TIME"
+      }
+     ]
+    }
+   },
+   "cardholder_id": "c7a96570-3b4b-4842-82ff-20a8dce46e10",
+   "_keys": [
+    "alert_settings",
+    "authorization_controls",
+    "brand",
+    "card_id",
+    "card_number",
+    "card_status",
+    "cardholder_id",
+    "created_at",
+    "created_by",
+    "form_factor",
+    "is_personalized",
+    "metadata",
+    "name_on_card",
+    "program",
+    "purpose",
+    "request_id",
+    "updated_at"
+   ]
+  }
+ },
+ "card_cny_status": {
+  "card_id": "deee9af9-c0b8-4988-88dc-6e83551bd3bd",
+  "card_status": "ACTIVE",
+  "authorization_controls": {
+   "allowed_currencies": [
+    "CNY"
+   ],
+   "allowed_merchant_brands": {
+    "categories": [],
+    "ids": [],
+    "subcategories": []
+   },
+   "allowed_merchant_categories": [],
+   "allowed_merchant_countries": [],
+   "allowed_transaction_count": "SINGLE",
+   "blocked_transaction_usages": [],
+   "transaction_limits": {
+    "currency": "CNY",
+    "limits": [
+     {
+      "amount": 30000.0,
+      "interval": "PER_TRANSACTION"
+     },
+     {
+      "amount": 30000.0,
+      "interval": "ALL_TIME"
+     }
+    ]
+   }
+  },
+  "cardholder_id": "c7a96570-3b4b-4842-82ff-20a8dce46e10",
+  "_keys": [
+   "alert_settings",
+   "all_card_versions",
+   "authorization_controls",
+   "brand",
+   "card_id",
+   "card_number",
+   "card_status",
+   "card_version",
+   "cardholder_id",
+   "created_at",
+   "created_by",
+   "delivery_details",
+   "form_factor",
+   "is_personalized",
+   "metadata",
+   "name_on_card",
+   "program",
+   "purpose",
+   "request_id",
+   "updated_at"
+  ]
+ },
+ "cny_over_limit_30000_01": {
+  "http": 201,
+  "body": {
+   "card_id": "deee9af9-c0b8-4988-88dc-6e83551bd3bd",
+   "failure_reason": "LIMIT_EXCEEDED",
+   "type": "AUTHORIZATION",
+   "subtype": "AUTHORIZATION",
+   "process_result": "DECLINED",
+   "card_transaction_id": "01a159e1-0689-7000-a732-0f26b173a393",
+   "merchant": {
+    "name": "AIRPRO_TX_GENERATOR",
+    "city": "A_CITY_NAME",
+    "country": "AUS",
+    "category_code": "7531"
+   },
+   "transaction_amount": 30000.01,
+   "transaction_currency": "CNY",
+   "billing_amount": 4539.19,
+   "billing_currency": "USD",
+   "_keys": [
+    "auth_code",
+    "billing_amount",
+    "billing_currency",
+    "card_id",
+    "card_transaction_event_id",
+    "card_transaction_id",
+    "card_transaction_lifecycle_id",
+    "failure_reason",
+    "masked_card_number",
+    "merchant",
+    "network_transaction_id",
+    "process_result",
+    "retrieval_ref",
+    "subtype",
+    "transacted_at",
+    "transaction_amount",
+    "transaction_currency",
+    "type",
+    "updated_at"
+   ]
+  }
+ },
+ "cny_exact_30000": {
+  "http": 201,
+  "body": {
+   "card_id": "deee9af9-c0b8-4988-88dc-6e83551bd3bd",
+   "failure_reason": "LIMIT_EXCEEDED",
+   "type": "AUTHORIZATION",
+   "subtype": "AUTHORIZATION",
+   "process_result": "DECLINED",
+   "card_transaction_id": "01a159e1-14b2-7000-ae4d-1ab980f4e579",
+   "merchant": {
+    "name": "AIRPRO_TX_GENERATOR",
+    "city": "A_CITY_NAME",
+    "country": "AUS",
+    "category_code": "7531"
+   },
+   "transaction_amount": 30000,
+   "transaction_currency": "CNY",
+   "billing_amount": 4539.18,
+   "billing_currency": "USD",
+   "_keys": [
+    "auth_code",
+    "billing_amount",
+    "billing_currency",
+    "card_id",
+    "card_transaction_event_id",
+    "card_transaction_id",
+    "card_transaction_lifecycle_id",
+    "failure_reason",
+    "masked_card_number",
+    "merchant",
+    "network_transaction_id",
+    "process_result",
+    "retrieval_ref",
+    "subtype",
+    "transacted_at",
+    "transaction_amount",
+    "transaction_currency",
+    "type",
+    "updated_at"
+   ]
+  }
+ },
+ "cny_freeze": {
+  "http": 200,
+  "body": {
+   "card_id": "deee9af9-c0b8-4988-88dc-6e83551bd3bd",
+   "card_status": "INACTIVE",
+   "authorization_controls": {
+    "allowed_currencies": [
+     "CNY"
+    ],
+    "allowed_merchant_brands": {
+     "categories": [],
+     "ids": [],
+     "subcategories": []
+    },
+    "allowed_merchant_categories": [],
+    "allowed_merchant_countries": [],
+    "allowed_transaction_count": "SINGLE",
+    "blocked_transaction_usages": [],
+    "transaction_limits": {
+     "currency": "CNY",
+     "limits": [
+      {
+       "amount": 30000.0,
+       "interval": "PER_TRANSACTION"
+      },
+      {
+       "amount": 30000.0,
+       "interval": "ALL_TIME"
+      }
+     ]
+    }
+   },
+   "cardholder_id": "c7a96570-3b4b-4842-82ff-20a8dce46e10",
+   "_keys": [
+    "alert_settings",
+    "authorization_controls",
+    "brand",
+    "card_id",
+    "card_number",
+    "card_status",
+    "cardholder_id",
+    "created_at",
+    "created_by",
+    "form_factor",
+    "is_personalized",
+    "metadata",
+    "name_on_card",
+    "program",
+    "purpose",
+    "request_id",
+    "updated_at"
+   ]
+  }
+ },
+ "cny_after_freeze_10": {
+  "http": 201,
+  "body": {
+   "card_id": "deee9af9-c0b8-4988-88dc-6e83551bd3bd",
+   "failure_reason": "CARD_INACTIVE",
+   "type": "AUTHORIZATION",
+   "subtype": "AUTHORIZATION",
+   "process_result": "DECLINED",
+   "card_transaction_id": "01a159e1-2162-7000-a59a-e881d4e895e6",
+   "merchant": {
+    "name": "AIRPRO_TX_GENERATOR",
+    "city": "A_CITY_NAME",
+    "country": "AUS",
+    "category_code": "7531"
+   },
+   "transaction_amount": 10,
+   "transaction_currency": "CNY",
+   "billing_amount": 1.51,
+   "billing_currency": "USD",
+   "_keys": [
+    "auth_code",
+    "billing_amount",
+    "billing_currency",
+    "card_id",
+    "card_transaction_event_id",
+    "card_transaction_id",
+    "card_transaction_lifecycle_id",
+    "failure_reason",
+    "masked_card_number",
+    "merchant",
+    "network_transaction_id",
+    "process_result",
+    "retrieval_ref",
+    "subtype",
+    "transacted_at",
+    "transaction_amount",
+    "transaction_currency",
+    "type",
+    "updated_at"
+   ]
+  }
+ },
+ "tx_eur": {
+  "http": 200,
+  "body": {
+   "_keys": [
+    "has_more",
+    "items"
+   ]
+  }
+ },
+ "tx_cny": {
+  "http": 200,
+  "body": {
+   "_keys": [
+    "has_more",
+    "items"
+   ]
+  }
+ }
+}

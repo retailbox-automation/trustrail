@@ -1,0 +1,18 @@
+{
+  "base": "https://api-demo.airwallex.com/api/v1",
+  "account_id": "acct_MASKED",
+  "test_money_only": true,
+  "issuing": "PASS",
+  "transfer": "BLOCKED",
+  "fx": "PASS_QUOTE_ONLY_CONVERSION_NOT_REQUIRED",
+  "cny_live": "BLOCKED_INDIRECT_USD_FLOOR_NOT_IMPLEMENTED",
+  "cleanup": "PASS",
+  "quote_id": "50557388-1e6a-363a-895f-654faa888033",
+  "created_card_ids": [
+    "48bb61ec-8467-4fdb-b9dd-b6428368d28c",
+    "1e0777e2-a3e6-463c-ac13-9dfedaab17ca"
+  ],
+  "api_error_steps": [],
+  "api_errors": 0,
+  "at": "2026-11-05T14:34:31.422133+00:00"
+}

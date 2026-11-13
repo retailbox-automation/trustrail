@@ -1,0 +1,711 @@
+{
+ "class": "panel_r2_2026_11_09",
+ "source": "adversarial review panel, round 3 (2026-11-09); emails verbatim; expectations from the panel's hold/flag/pending column",
+ "fixtures": [
+  {
+   "id": "B01_iban_split_lines_de",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Bankverbindung",
+    "body": "Unsere Bankverbindung hat sich geaendert. Bitte kuenftig auf\nIBAN: DE02 1203 0000\n0000 2020 51\nueberweisen.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b01@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B02_iban_nbsp_zwsp_de",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Bankverbindung",
+    "body": "Bitte kuenftig auf IBAN DE02 1203​0000 0000 2020 51 ueberweisen.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b02@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B03_iban_fullwidth",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Zahlung",
+    "body": "ＩＢＡＮ：ＤＥ０２　１２０３　００００　００００　２０２０　５１",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b03@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B04_iban_endash_de",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Bankverbindung",
+    "body": "Ab sofort bitte nur noch auf IBAN DE02–1203–0000–0000–2020–51 ueberweisen. Die alte Verbindung ist geschlossen.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b04@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B05_iban_slash_es",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Datos bancarios",
+    "body": "Hemos cambiado de banco. A partir de ahora, transfieran a IBAN DE02/1203/0000/0000/2020/51.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b05@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B06_en_old_named_new_endash",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Payments",
+    "body": "Please do not use IBAN DE89 3704 0044 0532 0130 00 any more. Use DE02–1203–0000–0000–2020–51 from today on.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b06@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B07_iban_tabs",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Remittance",
+    "body": "Kindly settle INV-1001 to IBAN\tDE02\t1203\t0000\t0000\t2020\t51\tthank you.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b07@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B08_table_account_gb",
+   "description": "refuterB round 2 (hold, target brit)",
+   "email": {
+    "from": "Brit Parts Ltd <accounts@britparts.co.uk>",
+    "reply_to": null,
+    "subject": "Remittance advice",
+    "body": "Please use the details below for all future payments.\n| Account name | Brit Parts Ltd |\n| Account number | 99887766 |\n| Sort code | 20-00-00 |",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b08@britparts.co.uk>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "brit"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B09_kontonummer_gb",
+   "description": "refuterB round 2 (hold, target brit)",
+   "email": {
+    "from": "Brit Parts Ltd <accounts@britparts.co.uk>",
+    "reply_to": null,
+    "subject": "Bankverbindung",
+    "body": "Neue Kontonummer: 99887766, Bankleitzahl/Sort code bleibt 20-00-00.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b09@britparts.co.uk>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "brit"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B10_numero_cuenta_gb",
+   "description": "refuterB round 2 (hold, target brit)",
+   "email": {
+    "from": "Brit Parts Ltd <accounts@britparts.co.uk>",
+    "reply_to": null,
+    "subject": "Cuenta",
+    "body": "Numero de cuenta nuevo: 99887766 (sort code 20-00-00). Gracias.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b10@britparts.co.uk>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "brit"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B11_trad_chinese_cny",
+   "description": "refuterB round 2 (hold, target shen)",
+   "email": {
+    "from": "Shenzhen Motor Co <finance@shenzhen-motor.cn>",
+    "reply_to": null,
+    "subject": "銀行帳戶變更通知",
+    "body": "我們的銀行帳戶已變更，請將款項匯至新帳號：6222 0202 0099 8877 66",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b11@shenzhen-motor.cn>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "shen"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B12_de_wording_attachment",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Wichtig: Bankverbindung",
+    "body": "Unsere Bankverbindung hat sich geaendert. Die neuen Kontodaten finden Sie im Anhang. Bitte ueberweisen Sie offene Rechnungen nur noch auf das neue Konto.",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b12@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B13_inv_space_tamper",
+   "description": "refuterB round 2 (flag, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Corrected invoice",
+    "body": "Corrected invoice INV 1001\nTotal due: EUR 1350.00",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b13@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED",
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "amount_mismatch"
+    ]
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B14_inv_leading_zero_tamper",
+   "description": "refuterB round 2 (flag, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Corrected invoice",
+    "body": "Invoice INV-01001 (corrected)\nTotal due: EUR 1350.00",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b14@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED",
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "amount_mismatch"
+    ]
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B15_inv_dot_tamper",
+   "description": "refuterB round 2 (flag, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Re: Inv. 1001",
+    "body": "Corrected amount for Inv. 1001\nAmount due: EUR 1350.00",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b15@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED",
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "amount_mismatch"
+    ]
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B16_rechnungsnr_tamper",
+   "description": "refuterB round 2 (flag, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Rechnungskorrektur",
+    "body": "Rechnungsnr. 1001 korrigiert\nGesamt: EUR 1350.00",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b16@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED",
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "amount_mismatch"
+    ]
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   }
+  },
+  {
+   "id": "B17_msgid_ws_only_change",
+   "description": "refuterB round 2 (pending, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-2002",
+    "body": "Invoice INV-2002\nTotal due: EUR 980.00 \n",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b17@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "RECORDED",
+     "PENDING_INVOICE",
+     "QUARANTINED"
+    ],
+    "signals": [],
+    "not_held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   },
+   "pre": [
+    {
+     "from": "Acme Accounts <billing@acme-tools.de>",
+     "reply_to": null,
+     "subject": "Invoice INV-2002",
+     "body": "Invoice INV-2002\nTotal due: EUR 980.00",
+     "received_at": "2026-11-09T12:00:00Z",
+     "message_id": "<b17@acme-tools.de>"
+    }
+   ]
+  },
+  {
+   "id": "B18_msgid_padded_reuse_bank",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-2002",
+    "body": "Our bank details changed: IBAN DE02 1203 0000 0000 2020 51",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": " <b18@acme-tools.de> "
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   },
+   "pre": [
+    {
+     "from": "Acme Accounts <billing@acme-tools.de>",
+     "reply_to": null,
+     "subject": "Invoice INV-2002",
+     "body": "Invoice INV-2002\nTotal due: EUR 980.00",
+     "received_at": "2026-11-09T12:00:00Z",
+     "message_id": "<b18@acme-tools.de>"
+    }
+   ]
+  },
+  {
+   "id": "B19_thread_quote_keep_old",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Re: Invoice INV-2002",
+    "body": "Correction: please use DE02 1203 0000 0000 2020 51 for this one.\n\n> On 9 Nov Acme wrote:\n> Invoice INV-2002\n> Total due: EUR 980.00\n> IBAN DE89 3704 0044 0532 0130 00",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b19b@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   },
+   "pre": [
+    {
+     "from": "Acme Accounts <billing@acme-tools.de>",
+     "reply_to": null,
+     "subject": "Invoice INV-2002",
+     "body": "Invoice INV-2002\nTotal due: EUR 980.00\nIBAN DE89 3704 0044 0532 0130 00",
+     "received_at": "2026-11-09T12:00:00Z",
+     "message_id": "<b19a@acme-tools.de>"
+    }
+   ]
+  },
+  {
+   "id": "B20_thread_quote_only_old_endash_new",
+   "description": "refuterB round 2 (hold, target acme)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": null,
+    "subject": "Re: Invoice INV-2002",
+    "body": "Kleine Korrektur: bitte auf DE02–1203–0000–0000–2020–51.\n\n> Invoice INV-2002\n> Total due: EUR 980.00\n> IBAN DE89 3704 0044 0532 0130 00",
+    "received_at": "2026-11-09T12:00:00Z",
+    "message_id": "<b20b@acme-tools.de>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD",
+     "BANK_CHANGE_HOLD"
+    ],
+    "signals": [],
+    "held": "acme"
+   },
+   "hostile": {
+    "kind": "invoice",
+    "invoice_id": null,
+    "amount": null,
+    "currency": null,
+    "bank": {
+     "iban": "DE89370400440532013000",
+     "account_number": null,
+     "sort_code": null,
+     "swift_code": null,
+     "account_name": null
+    }
+   },
+   "pre": [
+    {
+     "from": "Acme Accounts <billing@acme-tools.de>",
+     "reply_to": null,
+     "subject": "Invoice INV-2002",
+     "body": "Invoice INV-2002\nTotal due: EUR 980.00\nIBAN DE89 3704 0044 0532 0130 00",
+     "received_at": "2026-11-09T12:00:00Z",
+     "message_id": "<b20a@acme-tools.de>"
+    }
+   ]
+  }
+ ]
+}

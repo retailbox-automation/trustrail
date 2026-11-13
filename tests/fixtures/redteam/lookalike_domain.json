@@ -1,0 +1,143 @@
+{
+ "class": "lookalike_domain",
+ "fixtures": [
+  {
+   "id": "L1",
+   "description": "New bank details from a lookalike domain (hyphenated TLD trick)",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools-de.com>",
+    "reply_to": null,
+    "subject": "Updated bank details",
+    "body": "Dear partner,\nour bank details have changed. Please use the new IBAN DE02 1203 0000 0000 2020 51 for all payments.\nAcme Tools GmbH",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<L1@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "lookalike_domain",
+     "new_account_vs_on_file"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "L2",
+   "description": "Invoice from a domain without the hyphen",
+   "email": {
+    "from": "Acme Billing <accounts@acmetools.de>",
+    "reply_to": null,
+    "subject": "Invoice INV-5001",
+    "body": "Invoice INV-5001\nTotal due: EUR 3,400.00",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<L2@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "lookalike_domain"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "L3",
+   "description": "Punycode homograph domain with new IBAN",
+   "email": {
+    "from": "Acme <billing@xn--acme-tols-52h.de>",
+    "reply_to": null,
+    "subject": "New bank account",
+    "body": "We moved to a new bank. New IBAN: DE44500105175407324931",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<L3@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "lookalike_domain",
+     "unicode_domain"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "L4",
+   "description": "UK supplier, .co instead of .co.uk, new sort code and account",
+   "email": {
+    "from": "Brit Parts <finance@britparts.co>",
+    "reply_to": null,
+    "subject": "Change of bank details",
+    "body": "Please note our new bank details.\nSort code: 30-99-50\nAccount number: 80012345",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<L4@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "lookalike_domain",
+     "new_account_vs_on_file"
+    ],
+    "states": {}
+   }
+  },
+  {
+   "id": "L5",
+   "description": "Registered domain used as a subdomain of an attacker domain",
+   "email": {
+    "from": "Acme Remittance <billing@acme-tools.de.secure-payments.net>",
+    "reply_to": null,
+    "subject": "Updated remittance information",
+    "body": "Updated remittance details: please remit to IBAN GB29 NWBK 6016 1331 9268 19 from today.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<L5@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "lookalike_domain"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "L6",
+   "description": "CNY supplier lookalike with digit-for-letter swap and a new account",
+   "email": {
+    "from": "Shenzhen Motor AR <ar@shenzhen-m0tor.cn>",
+    "reply_to": null,
+    "subject": "Invoice SM-8812",
+    "body": "Invoice SM-8812\nTotal due: CNY 18,000.00\nNew account number: 6217 0000 1111 2222 333",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<L6@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "lookalike_domain",
+     "new_account_vs_on_file"
+    ],
+    "states": {}
+   }
+  }
+ ]
+}

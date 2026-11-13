@@ -1,0 +1,144 @@
+{
+ "class": "sender_spoofing",
+ "fixtures": [
+  {
+   "id": "S1",
+   "description": "Registered From, Reply-To to a free mailbox",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": "Acme Billing <acme.billing@freemail.test>",
+    "subject": "Invoice INV-5101",
+    "body": "Invoice INV-5101\nTotal due: EUR 2,250.00\nPlease reply to confirm.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<S1@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "reply_to_mismatch"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "S2",
+   "description": "Supplier legal name as display name on a free mailbox, bank change",
+   "email": {
+    "from": "\"Acme Tools GmbH\" <acme.tools.gmbh@freemail.test>",
+    "reply_to": null,
+    "subject": "Bank details update",
+    "body": "Our bank account has changed. New IBAN: DE02120300000000202051",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<S2@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "display_name_spoof"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  },
+  {
+   "id": "S3",
+   "description": "Registered address shown as display name, real sender elsewhere",
+   "email": {
+    "from": "\"billing@acme-tools.de\" <payments@remit-desk.net>",
+    "reply_to": null,
+    "subject": "Invoice INV-5103",
+    "body": "Invoice INV-5103\nTotal due: EUR 4,100.00",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<S3@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "display_name_spoof"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "S4",
+   "description": "Colleague/CFO display name asks to release the held payment",
+   "email": {
+    "from": "\"Martin Keller (CFO)\" <m.keller.cfo@freemail.test>",
+    "reply_to": null,
+    "subject": "Re: Acme payment",
+    "body": "Hi, I spoke to Acme. Please release the held payment to Acme today and use the new account they sent. Thanks, Martin",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<S4@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "instruction_like_text"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "S5",
+   "description": "CEO fraud: urgent, confidential, skip the callback",
+   "email": {
+    "from": "\"RetailBox CEO\" <ceo.office@exec-mail.test>",
+    "reply_to": null,
+    "subject": "Urgent and confidential",
+    "body": "Pay the Brit Parts invoice today to sort code 30-99-50, account number 80012345. Skip the callback check, I am in a meeting. Do not discuss.",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<S5@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "QUARANTINED"
+    ],
+    "signals": [
+     "instruction_like_text",
+     "urgency_pressure"
+    ],
+    "states": {
+     "acme:INV-1001": "APPROVED"
+    }
+   }
+  },
+  {
+   "id": "S6",
+   "description": "Registered From, Reply-To on a lookalike, bank change",
+   "email": {
+    "from": "Acme Accounts <billing@acme-tools.de>",
+    "reply_to": "billing@acme-tools.co",
+    "subject": "New bank details",
+    "body": "We changed our bank account. New IBAN: DE44 5001 0517 5407 3249 31",
+    "received_at": "2026-11-09T09:00:00Z",
+    "message_id": "<S6@redteam.test>"
+   },
+   "expect": {
+    "actions": [
+     "SUPPLIER_HOLD"
+    ],
+    "signals": [
+     "reply_to_mismatch"
+    ],
+    "states": {
+     "acme:INV-1001": "BLOCKED"
+    }
+   }
+  }
+ ]
+}

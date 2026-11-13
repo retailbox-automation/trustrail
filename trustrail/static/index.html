@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>TrustRail · Payment desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&display=swap" rel="stylesheet">
+<style>
+/* Цвета сняты пипеткой (PIL, медиана пятна) с variant-C.png / variant-C-card.png.
+   Геометрия: координаты картинки 1717 px × (1920/1717 = 1.11823) → CSS px. */
+:root{
+  --page:#f6f7fa; --sidebar:#f5f6fa; --sidebar-line:#e9ecf2; --topbar:#fbfcfe; --topbar-line:#eceef3;
+  --card:#fefefe; --card-line:#dfe2e8; --row-line:#edeff3;
+  --ink:#0b0e1b; --ink-2:#363e50; --ink-3:#5d6273; --ink-label:#3b4155;
+  --green:#10725a; --green-ink:#0a5f47; --green-icon:#0a6a4f; --green-50:#e2f7ef; --green-100:#d6f3e7; --mint:#a3e5cd;
+  --amber-50:#fef2dc; --amber-100:#feebc0; --amber-ink:#8f4304; --amber-ink-2:#6e2a04; --amber-bar:#c46f08;
+  --red-50:#fde1d6; --red-100:#fde0e4; --red-ink:#7c0a0a; --red-mark:#f7bcbf; --red-line:#f1cfd6;
+  --blue-50:#e0eafe; --blue-100:#d7e4fe; --blue-ink:#0b30bb; --blue:#1446e0; --blue-icon:#0a42d4;
+  --gray-pill:#edeef2; --gray-ink:#2c3242; --btn-line:#c5c9d3; --btn-dis:#eceef1; --btn-dis-ink:#727585;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--page)}
+body{width:1920px;height:1024px;font-family:Inter,system-ui,sans-serif;font-weight:440;letter-spacing:-0.08px;color:var(--ink);background:var(--page);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+svg{display:block;flex:none}
+.nw{white-space:nowrap}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- каркас ---------- */
+.app{display:grid;grid-template-columns:253px 1667px;height:1024px}
+.sidebar{background:var(--sidebar);border-right:1px solid var(--sidebar-line);padding:20px 0 0 0}
+.main{display:flex;flex-direction:column;min-width:0}
+
+/* сайдбар */
+.brand{display:flex;align-items:center;height:39px;padding-left:30px;gap:13.4px;margin-top:1px}
+.brand__name{font-size:27px;font-weight:750;letter-spacing:-0.1px;line-height:34px;white-space:nowrap;color:#05060d;position:relative;top:-0.6px}
+.nav{display:flex;flex-direction:column;gap:4.7px;margin:31.6px 0 0 15.7px;width:218px}
+.nav__item+.nav__item{position:relative;top:1px}
+.nav__item{display:flex;align-items:center;height:50px;padding-left:17.6px;gap:17.4px;border-radius:9px;
+  font-size:19.2px;line-height:50px;color:#11162a;white-space:nowrap}
+.nav__item svg{width:24px;height:24px;color:#363b4d}
+.nav__item.is-active{background:#dcf3eb;font-weight:620;font-size:18.7px}
+.nav__item.is-active svg{color:var(--green-icon)}
+
+/* верхняя панель */
+.topbar{height:63px;flex:none;background:var(--topbar);border-bottom:1px solid var(--topbar-line);
+  display:flex;align-items:flex-start;padding-left:33.4px}
+.company{width:281.8px;height:55.6px;display:flex;align-items:center;font-size:22.3px;font-weight:750;white-space:nowrap;color:#04050c}
+/* the badge sits in the design's fixed 506.4 px slot: a longer label widens the pill, never moves the balances */
+.env-wrap{flex:none;width:506.4px;display:flex}
+.env-badge{margin-top:14.5px;margin-left:1px;min-width:242.7px;max-width:480px;padding:0 12px;height:29.1px;border-radius:8px;background:#e1ebfd;color:var(--blue-ink);
+  display:flex;align-items:center;justify-content:center;font-size:14.9px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar__divider{width:1px;height:36.8px;background:#e0e4eb;margin:11.2px 0 0 0}
+.balances{display:flex;margin:11.2px 0 0 33.7px;gap:0}
+.bal{height:35.2px;border:1px solid #e1e4ea;background:#f2f4f8;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  gap:9.5px;white-space:nowrap}
+.bal__ccy{font-size:16.8px;font-weight:750}
+.bal__amt{font-size:16.8px;font-weight:650}
+.bal--usd{width:181px}.bal--eur{width:167.7px;margin-left:24.7px}.bal--gbp{width:179px;margin-left:25.8px}.bal--cny{width:181.2px;margin-left:24.5px}
+
+/* контент */
+.content{flex:1;display:flex;flex-direction:column;padding:var(--pad-top) 15px 0 21px}
+.card{background:var(--card);border:1px solid var(--card-line);border-radius:11px;position:relative}
+.sec-title{font-size:19.8px;font-weight:750;line-height:28px;white-space:nowrap;color:#04050d}
+
+/* ---------- герой ---------- */
+.hero{height:var(--hero-h);overflow:hidden;flex:none}
+.hero__band{height:var(--band-h);background:var(--amber-50);position:relative}
+.hero__warn{position:absolute;width:48px;height:44px;color:var(--amber-ink)}
+.hero__title{position:absolute;display:flex;align-items:center;height:34px;font-size:24.9px;font-weight:750;white-space:nowrap;color:#03040b}
+.hero__sub{position:absolute;height:26px;line-height:26px;font-size:17.5px;color:var(--ink-2);white-space:nowrap}
+.hero__body{position:relative;display:flex;align-items:flex-start;height:calc(100% - var(--band-h))}
+.agent-msg{display:flex;align-items:stretch}
+.spark-tile{background:#e1f7ee;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.spark-tile svg{color:#0b7b5b}
+.msg-box{background:#e7f9f1;border-radius:11px;font-weight:650;color:#020306;flex:none}
+.vdiv{width:1px;background:#e1e3e8;flex:none}
+
+/* state switching */
+body[data-state="stopped"] .only-card, body[data-state="card"] .only-stopped{display:none !important}
+body[data-state="stopped"]{--pad-top:21px;--hero-h:395px;--band-h:80.6px;--gap-hero:20px;--row2-h:220px;--gap-row2:18px;--row3-h:266px}
+body[data-state="card"]{--pad-top:19px;--hero-h:442px;--band-h:76.2px;--gap-hero:15px;--row2-h:197px;--gap-row2:14px;--row3-h:248px}
+
+/* stopped hero */
+.hs .hero__warn{left:19.4px;top:20px}
+.hs .hero__title{left:84.5px;top:8.2px}
+.hs .hero__sub{left:83.5px;top:42.5px}
+.status-pill-lg{display:inline-flex;align-items:center;justify-content:center;height:29.1px;width:116.3px;margin-left:10.5px;border-radius:7px;
+  background:var(--red-50);color:#7d0909;font-size:23.4px;font-weight:750;position:relative;top:1.6px}
+.hs .col-left{margin:17.8px 0 0 23.8px;width:795.1px;display:flex;flex-direction:column}
+.hs .spark-tile{width:57px;height:59.3px;margin:0.4px 0 0 1.2px}
+.hs .msg-box{width:733.6px;height:60.4px;margin-left:3.3px;padding:2.4px 0 0 24.6px;font-size:20.2px;line-height:25.2px}
+.cmp{display:flex;gap:25.8px;margin-top:16.9px}
+.cmp__card{height:171.1px;border:1px solid #e3e6eb;border-radius:9px;overflow:hidden;background:#fff;flex:none}
+.cmp__card--file{width:393.6px}.cmp__card--email{width:374.6px}
+.cmp__hdr{height:37px;display:flex;align-items:center;padding-left:21.4px;font-size:16.9px;white-space:nowrap}
+.cmp__card--file .cmp__hdr{background:var(--green-50);color:#03080f}
+.cmp__card--email .cmp__hdr{background:var(--amber-50);color:var(--amber-ink-2);font-weight:650;font-size:18.4px}
+.cmp__hdr svg{width:24px;height:24px;margin:0 15.5px 0 -1.5px}
+.cmp__card--file .cmp__hdr svg{color:#06694d}
+.cmp__card--email .cmp__hdr svg{color:var(--amber-ink)}
+.cmp__rows{padding:11.2px 16.9px 0 21.4px}
+.cmp__row{display:flex;align-items:center;height:29.1px;padding-bottom:5px;border-bottom:1px solid var(--row-line);white-space:nowrap}
+.cmp__row:last-child{border-bottom:0}
+.cmp__lbl{width:111.8px;font-size:16.35px;color:var(--ink-label);flex:none}
+.cmp__val{font-size:16.6px;color:#070818}
+.cmp__card--email .cmp__lbl{width:112.9px}
+.mark{border-radius:4px;padding:0 2.5px;margin:0 1px;font-weight:650;display:inline-block;line-height:21.5px}
+.mark--ok{background:var(--mint);color:#02140d}
+.mark--bad{background:var(--red-mark);color:#5a0505}
+.val-pill{display:inline-block;background:var(--red-100);color:#550909;font-weight:550;border-radius:5px;line-height:22px;padding:0 9px 0 11.2px;margin-left:-7.8px}
+.foot{display:flex;align-items:center;height:20px;margin-top:12.1px;white-space:nowrap;font-size:13.8px;color:var(--ink-3)}
+.foot svg{width:20px;height:20px;margin:0 15.7px 0 3.5px;color:#666b7a}
+.hs .vdiv1{margin:54.8px 0 0 26.8px;height:213.6px}
+.signals{margin:58.4px 0 0 27.7px;width:382.8px;flex:none}
+.signals__title{font-size:19.4px;font-weight:750;line-height:26px;color:#03040d;white-space:nowrap}
+.signals__list{list-style:none;margin-top:5.3px}
+.signals__item{display:flex;align-items:center;height:33.5px;white-space:nowrap;font-size:16.2px;color:#0b0e20}
+.signals__icon{width:29px;height:29px;border-radius:50%;background:#feeed3;display:flex;align-items:center;justify-content:center;margin-right:14.6px;flex:none}
+.signals__icon svg{width:23px;height:23px;color:#7e3207}
+.hs .vdiv2{margin:54.8px 0 0 0;height:213.6px}
+.actions{margin:58.2px 0 0 34.8px;width:305.3px;display:flex;flex-direction:column;flex:none}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;border-radius:7px;font-size:17.7px;font-weight:650;white-space:nowrap}
+.btn--primary{background:var(--green);color:#fff;background:linear-gradient(180deg,#127a5e,#10765a)}
+.btn--secondary{background:#fff;border:1.5px solid var(--btn-line);color:#04050d}
+.btn--disabled{background:var(--btn-dis);color:var(--btn-dis-ink);font-weight:550;font-size:18px;border:1px solid #e4e6ea;cursor:not-allowed}
+.hs .btn--primary{height:45.8px}
+.hs .btn--secondary{height:43.6px;margin-top:14.6px}
+.hs .btn--disabled{height:44.8px;margin-top:15.6px}
+.actions__note{text-align:center;font-size:14.8px;color:#646879;line-height:20px;margin-top:5.4px;white-space:nowrap}
+
+/* card hero */
+.hc .hero__warn{left:15.2px;top:16.5px}
+.hc .hero__title{left:83px;top:5.4px;font-size:25px}
+.hc .hero__title .sep{margin:0 8px;font-weight:750}
+.hc .hero__title .ready{color:var(--blue);font-weight:650;font-size:25.4px}
+.hc .hero__sub{left:83px;top:38px;font-size:17px}
+.hc .agent-msg{position:absolute;left:21.4px;top:12.1px}
+.hc .spark-tile{width:58.1px;height:59.3px}
+.hc .spark-tile svg{position:relative;top:-3.5px}
+.hc .msg-box{width:728px;height:59.3px;margin-left:2.2px;padding:1.2px 0 0 13.8px;font-size:18.7px;line-height:24.6px}
+.vcard{position:absolute;left:27.5px;top:90.5px;width:329.9px;height:166.6px;border-radius:12px;
+  box-shadow:0 3px 8px rgba(16,40,34,.10)}
+.vcard__bg{position:absolute;inset:0;width:100%;height:100%;border-radius:12px}
+.vcard__mark{position:absolute;left:32.4px;top:20.1px;width:32.4px;height:38px}
+.vcard__name{position:absolute;left:77.2px;top:20.5px;height:34px;line-height:34px;font-size:26px;font-weight:750;color:#fff;white-space:nowrap}
+.vcard__num{position:absolute;left:30.5px;top:114.9px;color:#fff;font-size:24px;line-height:24px;letter-spacing:-0.1px;word-spacing:2.4px;white-space:pre}
+.vcard__caption{position:absolute;left:13.2px;top:170.8px;height:20px;line-height:20px;font-size:13.7px;color:#454c5d;white-space:nowrap}
+.hc .vdiv1{position:absolute;left:380.3px;top:89.4px;height:171.1px}
+.limits{position:absolute;left:409.4px;top:89.4px;width:329px}
+.limits__row{position:absolute;left:0;display:flex;align-items:center;white-space:nowrap}
+.limits__row svg{width:29px;height:27px;color:#3c4253}
+.limits__txt{position:absolute;left:59.3px}
+.lim-1{top:0}
+.lim-sep{position:absolute;left:59.3px;width:269.3px;height:1px;background:#e9ebef}
+.hc .vdiv2{position:absolute;left:762.7px;top:89.4px;height:171.1px}
+.checks{position:absolute;left:785.1px;top:85.1px;width:435px;height:179px;border:1px solid #dfe2e9;border-radius:9px;overflow:hidden;background:#fff;
+  box-shadow:0 1px 3px rgba(20,30,60,.05)}
+.checks__hdr{height:41.6px;background:#eeeff3;display:flex;align-items:center;padding-left:18px;font-size:18.2px;font-weight:650;white-space:nowrap;color:#03040c}
+.checks__row{position:absolute;left:19.1px;right:17px;margin-top:-1.5px;display:flex;align-items:center;justify-content:space-between;height:36px;white-space:nowrap;font-size:15.9px;color:#0d1020}
+.checks__sep{position:absolute;left:18px;right:16px;height:1px;background:#e9ebef}
+.code{display:inline-flex;align-items:center;justify-content:center;height:30.8px;border-radius:8px;background:#fddbd8;color:#800606;font-size:15px;font-weight:650}
+.code.code--ok{background:#dcf3e3;color:#0b5d2a}
+.hc .vdiv3{position:absolute;left:1240.8px;top:89.4px;height:171.1px}
+.hc .actions{position:absolute;left:1262.6px;top:90.5px;width:350px;margin:0}
+.hc .btn--primary{height:49.2px;font-size:19.3px;background:linear-gradient(180deg,#07734f,#056a48)}
+.hc .btn--secondary{height:48px;margin-top:13.5px;font-size:18.4px}
+.btn--hold{height:50.3px;margin-top:13.4px;background:#eaebf0;color:#2c354c;font-weight:550;font-size:18.9px}
+.hc .btn--issued{height:49.2px;font-size:19.3px}
+.hc .btn--secondary:disabled{color:var(--btn-dis-ink);border-color:#e4e6ea;cursor:not-allowed}
+.info-bar{position:absolute;left:21.4px;top:290.9px;width:1590px;height:31.3px;border-radius:8px;
+  background:linear-gradient(90deg,#e8f1ff 0%,#ebf1fe 45%,#e4edfd 75%,#d8e7fe 100%);display:flex;align-items:center;white-space:nowrap;font-size:16px;font-weight:550;color:#0a0d1d}
+.info-bar svg{width:23.5px;height:23.5px;margin:0 26.8px 0 17.9px;color:#0a3ff0}
+.hc .foot2{position:absolute;left:25.1px;top:332.4px;height:20px;line-height:20px;font-size:14.25px;color:#4b5161;white-space:nowrap}
+
+/* ---------- ряд 2: таймлайн + лестница ---------- */
+.row2{display:flex;gap:18px;margin-top:var(--gap-hero);height:var(--row2-h);flex:none}
+.tl{width:849px;height:100%}
+.ladder{width:764px;height:100%}
+.tl .sec-title,.ladder .sec-title{position:absolute;left:18.2px;top:var(--sec-top)}
+.ladder .sec-title{font-size:20.35px;left:19.6px}
+body[data-state="stopped"]{--sec-top:6.8px;--rail-y:72.8px;--tlc-top:89.6px;--tlc-h:93.9px;--tl-pt:4.6px;--tl-amt-mt:3.1px;--tl-pill-mt:7.6px;--tl-pill-h:26.8px}
+body[data-state="card"]{--sec-top:3.5px;--rail-y:63.3px;--tlc-top:82.9px;--tlc-h:89.4px;--tl-pt:2.3px;--tl-amt-mt:1px;--tl-pill-mt:7.4px;--tl-pill-h:28.5px}
+.rail{position:absolute;left:0;top:calc(var(--rail-y) - 25px);width:849px;height:50px}
+.rail svg.rail__lines{position:absolute;left:0;top:0}
+.node{position:absolute;top:25px;transform:translate(-50%,-50%)}
+.barrier{position:absolute;left:484.3px;top:3.5px;width:43.6px;height:39.1px;border-radius:9px;
+  background:linear-gradient(180deg,#fff0cc,#fde4ad);display:flex;align-items:center;justify-content:center}
+.tl-cols{position:absolute;left:20.2px;top:var(--tlc-top);display:flex;align-items:flex-start}
+.tlc{height:var(--tlc-h);display:flex;flex-direction:column;align-items:center;padding-top:var(--tl-pt);border-radius:10px;white-space:nowrap;text-align:center}
+.tlc--1{width:177.8px}.tlc--2{width:218.2px}.tlc--3{width:164.4px;margin-left:7.7px}.tlc--4{width:255px}
+.tlc__name{font-size:15.5px;font-weight:650;line-height:21px;color:#04050d}
+.tlc__amt{font-size:15.6px;font-weight:650;line-height:24px;margin-top:var(--tl-amt-mt);color:#03040b}
+.tlc__sub{font-size:15.2px;line-height:21px;color:#1a1d2a}
+.tlc--4 .tlc__amt{font-size:15.1px;font-weight:550;line-height:21px;margin-top:0.8px}
+.pill{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;font-size:13.5px;font-weight:550;white-space:nowrap}
+.tlc .pill{height:var(--tl-pill-h);margin-top:var(--tl-pill-mt)}
+.pill--green{background:#e0f7ee;color:#0a5139;width:120.8px}
+.pill--blue{background:#d9e6fe;color:#0a33c3;width:133px}
+.pill--red{background:#fdded4;color:#7d0b0a;width:73.8px}
+.pill--gray{background:var(--gray-pill);color:var(--gray-ink);width:172.2px}
+.tlc--4 .pill{margin-top:9.5px;height:28px}
+/* подсветка колонки по состоянию */
+body[data-state="stopped"] .tlc--3{background:var(--amber-50)}
+body[data-state="stopped"] .tlc--3 .tlc__name{font-size:16.2px;color:#5c1d02;line-height:22px}
+body[data-state="stopped"] .tlc--3 .tlc__amt{font-size:16.4px;font-weight:750;color:#820606}
+body[data-state="card"] .tlc--2{background:#e1eafe;width:178.9px;margin-left:21.3px}
+body[data-state="card"] .tlc--3{margin-left:32.6px}
+body[data-state="card"] .tlc--4{margin-left:-5.2px}
+body[data-state="card"] .tlc--2 .tlc__name{font-size:16px}
+body[data-state="card"] .tlc--2 .tlc__amt{font-size:16.2px}
+body[data-state="card"] .tlc--2 .pill{background:#c8dcfe;font-size:14.6px;width:141px}
+body[data-state="card"] .tlc--3 .tlc__name{font-size:16px}
+body[data-state="card"] .tlc--3 .tlc__amt{font-size:16px;font-weight:750}
+body[data-state="card"] .tlc--3 .pill{background:#fddbda;width:100px;font-size:14.6px}
+body[data-state="card"] .tlc--1 .pill{width:127px;font-size:14px}
+body[data-state="card"] .tlc--4 .pill{width:173px;margin-top:11.4px}
+
+/* лестница доверия */
+body[data-state="stopped"]{--chev-top:48.8px;--chev-h:37.4px}
+body[data-state="card"]{--chev-top:46px;--chev-h:34.7px}
+.chevrons{position:absolute;left:16.9px;top:var(--chev-top);display:flex;height:var(--chev-h)}
+.chev{height:100%;display:flex;align-items:center;justify-content:center;gap:12px;font-size:15.6px;font-weight:650;white-space:nowrap;flex:none}
+.chev svg{width:21px;height:21px}
+.chev--new{width:267.2px;background:#d7e4fd;color:#03040e;clip-path:polygon(0 0,calc(100% - 14.5px) 0,100% 50%,calc(100% - 14.5px) 100%,0 100%);border-radius:7px 0 0 7px;padding-right:21px}
+.chev--new svg{color:#0a3dce}
+.chev--ver{width:243.8px;margin-left:-6.7px;background:#ccefe2;color:#010203;clip-path:polygon(0 0,calc(100% - 14.5px) 0,100% 50%,calc(100% - 14.5px) 100%,0 100%,14.5px 50%);padding-right:8px}
+.chev--ver svg{color:#056448}
+.chev--tru{width:234.8px;margin-left:-7.8px;background:#13745a;color:#fff;clip-path:polygon(0 0,calc(100% - 14.5px) 0,100% 50%,calc(100% - 14.5px) 100%,0 100%,14.5px 50%);padding-left:8px}
+.ld-item{position:absolute;border-radius:9px;white-space:nowrap}
+.ld-item__name{font-size:14.3px;font-weight:650;line-height:20px;color:#03040b}
+.ld-item__amt{font-size:15px;font-weight:650;line-height:22px;color:#03040b}
+.ld-item__sub{font-size:15.4px;line-height:20px;color:#1a1d2a}
+.ld-foshan{background:linear-gradient(90deg,#dde8fe 0%,#eaf1fe 30%,#f1f6fe 100%);display:flex;align-items:center}
+body[data-state="stopped"] .ld-foshan{left:25.8px;top:94px;width:236px;height:52.6px;padding:0 0 4px 32.4px}
+body[data-state="stopped"] .ld-foshan .ld-item__icon{display:none}
+body[data-state="card"] .ld-foshan{left:21.4px;top:89.6px;width:244.9px;height:73.8px;background:#f3f8ff;border:2px solid #6e9ff8;padding:0 0 5px 19.2px}
+body[data-state="card"] .ld-foshan .ld-item__icon{width:23px;height:19px;color:#1b55ee;margin:-25px 29.6px 0 0}
+body[data-state="card"] .ld-foshan .ld-item__name{font-size:16.4px;line-height:22px}
+body[data-state="card"] .ld-foshan .ld-item__amt{font-size:17.6px;font-weight:750;line-height:27px;margin-top:2px}
+.ld-pennine{left:16.9px;top:153.3px;width:252.7px;height:50.3px;background:#fee9ee;border:1px dashed #efc6cf;display:flex;align-items:center;padding-left:12.4px}
+.ld-pennine svg{width:21px;height:20px;color:#93090b;margin-right:17px}
+.ld-pennine .ld-item__name{font-size:14.6px;color:#760507;line-height:21px}
+.ld-pennine .ld-item__amt{font-size:14.4px;color:#760507;line-height:21px;font-weight:400}
+.ld-pennine .ld-item__amt b{font-weight:750}
+.ld-marlow{background:#e8f9f2;padding-left:31.3px}
+body[data-state="stopped"] .ld-marlow{left:293.1px;top:94px;width:202.4px;height:71.6px;padding-top:4.4px}
+body[data-state="card"] .ld-marlow{left:287.5px;top:86.2px;width:210.2px;height:76px;padding:4.2px 0 0 36px}
+.ld-marlow .ld-item__amt{margin-top:1.5px;line-height:22px}
+.ld-marlow .ld-item__sub{margin-top:-2.5px}
+.ld-atelier{background:#e9f9f2;text-align:center;display:flex;flex-direction:column;align-items:center}
+body[data-state="stopped"] .ld-atelier{left:529px;top:92.9px;width:205.8px;height:59.3px;padding-top:5px}
+body[data-state="card"] .ld-atelier{left:524.6px;top:86.2px;width:211.3px;height:76px;padding-top:4px}
+.ld-atelier .ld-item__name{font-size:15.3px}
+.ld-atelier .ld-item__amt{font-size:16.4px;font-weight:750;margin-top:3.6px}
+
+/* ---------- ряд 3: очередь + лента ---------- */
+.row3{display:flex;gap:18px;margin-top:var(--gap-row2);height:var(--row3-h);flex:none}
+.queue{width:893px;height:100%}
+.activity{width:720px;height:100%}
+.queue .sec-title{position:absolute;left:16px;top:7.2px;font-size:19.2px}
+body[data-state="stopped"]{--qcols:173.4px 61.5px 83.8px 127.5px 159.9px 108.5px 146.5px;--qh1:1.1px;--qh2:-3.4px;--qh3:5.5px;--qh5:0px;--qh6:0px;--qh7:1.1px;--q-hdr-top:44.8px;--q-hdr-h:29.1px;--q-gap:0px;--q-r1:46.7px;--q-r2:40.5px;--q-r3:44.8px;--q-r4:45.8px;--q-sel-t:1.2px;--q-sel-b:2.3px;--act-top:41.5px;--act-row:50.9px;--act-title:6.2px}
+body[data-state="card"]{--qcols:177.9px 57px 82.7px 116.3px 164.4px 115.2px 147.6px;--qh1:0px;--qh2:-6.7px;--qh3:2px;--qh5:-1px;--qh6:1px;--qh7:-4.5px;--q-hdr-top:41.5px;--q-hdr-h:24.6px;--q-gap:6.7px;--q-r1:40.4px;--q-r2:38px;--q-r3:38.2px;--q-r4:46.9px;--q-sel-t:0px;--q-sel-b:1.3px;--act-top:38.1px;--act-row:48.1px;--act-title:7.4px}
+.qtable{position:absolute;left:10.2px;top:var(--q-hdr-top);width:870px}
+.qgrid{display:grid;grid-template-columns:var(--qcols);padding-left:8.9px;align-items:center}
+.qhead{height:var(--q-hdr-h);background:#f1f2f6;border-radius:7px;font-size:13.5px;font-weight:550;color:#14182c;white-space:nowrap}
+.qhead span:nth-child(1){margin-left:var(--qh1)}.qhead span:nth-child(2){margin-left:var(--qh2)}.qhead span:nth-child(3){margin-left:var(--qh3)}.qhead span:nth-child(5){margin-left:var(--qh5)}.qhead span:nth-child(6){margin-left:var(--qh6)}.qhead span:nth-child(7){margin-left:var(--qh7)}
+.qrows{margin-top:var(--q-gap)}
+.qrow{position:relative;border-bottom:1px solid var(--row-line);font-size:13.2px;font-weight:550;color:#0a0b1b;white-space:nowrap}
+.qrow:last-child{border-bottom:0}
+.qrow--1{height:var(--q-r1)}.qrow--2{height:var(--q-r2)}.qrow--3{height:var(--q-r3)}.qrow--4{height:var(--q-r4)}
+.qrow>*{position:relative}
+.q-inv{font-weight:400}
+.q-amt{font-size:13.3px}
+.q-amt small{display:block;font-size:10.9px;font-weight:400;line-height:17.9px;color:#1b1f30}
+.q-amt-2l{line-height:17.9px;margin-top:-1px}
+.q-meth--sm{font-size:12.1px !important;letter-spacing:-0.25px !important}
+.q-meth{font-size:12.8px;letter-spacing:-0.1px;font-weight:400;color:#1b1f30;line-height:16.8px}
+.qpill{display:inline-flex;align-items:center;justify-content:center;height:23.5px;border-radius:7px;font-size:13.3px;font-weight:550}
+.qpill--new{width:47px;background:#e4edfe;color:#0830bf}
+.qpill--trusted{width:69.3px;background:#d9f5e9;color:#045239}
+.qpill--revoked{width:87px;background:#fff1ef;color:#850f13;font-size:11.4px;box-shadow:inset 0 0 0 1px #fde3df}
+.qpill--verified{width:69.3px;background:#d8f6ea;color:#045239}
+.qstat{display:flex;align-items:center;gap:8.4px;font-size:13.3px;font-weight:550;margin-left:-1px}
+.qstat i{width:10px;height:10px;border-radius:50%;flex:none}
+.qstat--blue{color:#0f3fc7}.qstat--blue i{background:#0d48cc}
+.qstat--green{color:#0d5f45}.qstat--green i{background:#0f7156}
+.qstat--red{color:#760505;font-weight:650}.qstat--red i{background:#880708}
+.qstat--orange{color:#7b3810;font-size:10.9px}.qstat--orange i{background:#97560f}
+/* выбранная строка */
+body[data-state="stopped"] .q-pennine,body[data-state="card"] .q-foshan{border-bottom-color:transparent}
+body[data-state="stopped"] .q-pennine::before,body[data-state="card"] .q-foshan::before{content:"";position:absolute;left:-4.5px;right:-3.3px;top:var(--q-sel-t);bottom:var(--q-sel-b);border:2px solid #4fa38c;background:#e2f7ef;border-radius:8px}
+body[data-state="stopped"] .q-pennine .q-name,body[data-state="card"] .q-foshan .q-name{font-weight:650}
+body[data-state="stopped"] .q-pennine .q-ctry,body[data-state="stopped"] .q-pennine .q-inv{color:#0a5e46}
+body[data-state="stopped"] .q-pennine .q-amt{font-weight:650}
+
+/* лента агента */
+.activity .sec-title{position:absolute;left:14.7px;top:var(--act-title);font-size:18.2px;display:flex;align-items:baseline}
+.activity .sec-title small{font-size:16.6px;font-weight:550;margin-left:7px}
+.act-list{position:absolute;left:10.2px;right:10.2px;top:var(--act-top);list-style:none}
+.act-row{height:var(--act-row);display:flex;align-items:center;border-bottom:1px solid #f0f2f5;white-space:nowrap}
+.act-row__icon{width:35.8px;height:35.8px;border-radius:7.8px;background:#eef3fe;display:flex;align-items:center;justify-content:center;margin-left:1.1px;flex:none}
+.act-row__icon svg{width:21px;height:17px;color:#1447d6}
+.act-row__time{width:62.6px;margin-left:16.8px;font-size:14.1px;color:#454a5b;flex:none}
+.act-row__text{font-size:13.5px;color:#0e1023}
+
+/* тумблер состояний (только для ревью) */
+.state-toggle{position:fixed;right:10px;bottom:10px;display:flex;gap:4px;padding:3px;border-radius:8px;background:rgba(255,255,255,.75);
+  box-shadow:0 1px 4px rgba(0,0,0,.12);opacity:.55;z-index:10}
+.state-toggle:hover{opacity:1}
+.state-toggle button{font-size:11px;font-weight:550;padding:3px 8px;border-radius:5px;color:#3a4050}
+body[data-state="stopped"] .state-toggle [data-set-state="stopped"],body[data-state="card"] .state-toggle [data-set-state="card"]{background:#e2f7ef;color:#0a5f47}
+</style>
+<style>
+/* additions for the working console; the design stylesheet above is unchanged */
+[hidden]{display:none !important}
+body.tr-loading .app{visibility:hidden}
+.tr-fail{display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#fde1d6;color:#7c0a0a;border-radius:8px;
+  padding:10px 16px;font-size:15px;font-weight:600;z-index:20;max-width:900px}
+body.tr-failed .tr-fail{display:block}
+.tr-noscript{padding:24px;font-size:16px}
+.tr-callback{justify-content:flex-start;text-align:left;padding:0 14px;font-size:15.5px;font-weight:500;cursor:text;outline:none}
+.tr-callback:focus{border-color:#10725a}
+.tr-link{display:block;margin:4px auto 0;font-size:14.2px;font-weight:600;color:#7c0a0a;text-decoration:underline}
+.tr-link:disabled{color:#9a9daa;cursor:not-allowed;text-decoration:none}
+.actions__note.tr-err,.actions__note.tr-ok{overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.actions__note.tr-err{color:#8a0c0c}
+.actions__note.tr-ok{color:#0a5f47}
+.hc .tr-card-note{margin-top:6px}
+.btn--disabled.tr-ready{background:linear-gradient(180deg,#127a5e,#10765a);color:#fff;cursor:pointer;border-color:transparent}
+.qrow[data-hero],.tlc[data-hero]{cursor:pointer}
+body.tr-replay [data-action]{cursor:not-allowed}
+body.tr-replay .actions .btn{opacity:.55}
+/* demo ledger: visible label, same position of everything after it */
+body.tr-demo .env-badge{width:340px;padding:0;background:#feebc0;color:#8f4304}
+</style>
+</head>
+<body data-state="stopped" class="tr-loading">
+<div class="tr-fail" role="alert"></div>
+<noscript><p class="tr-noscript">The payment desk needs JavaScript.</p></noscript>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M10.27 3.95 2.27 17.95A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3.05l-8-14a2 2 0 0 0-3.46 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.25" fill="currentColor"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="m8.2 12.2 2.6 2.6 5-5.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 16.5v-5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 20"><rect x="2" y="2" width="20" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="m2.8 4.2 9.2 6.6 9.2-6.6" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 32 32"><path d="M18 1.5c.9 8.2 4.2 11.5 12.4 12.4-8.2.9-11.5 4.2-12.4 12.4-.9-8.2-4.2-11.5-12.4-12.4C13.8 13 17.1 9.7 18 1.5Z" fill="currentColor"/><path d="M6.2 22.6v7M2.7 26.1h7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-shield-rails" viewBox="0 0 36 40"><path d="M18 .6 35.4 5.8v13.6c0 10-7 16.8-17.4 20.2C7.6 36.2.6 29.4.6 19.4V5.8Z" fill="currentColor"/><path d="M11.8 26.4 18.4 14.4M18.6 26.4l6.6-12" stroke="var(--rail,#fff)" stroke-width="3.5" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <!-- ===== сайдбар ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <svg width="36" height="39" viewBox="0 0 36 40" style="color:#086b4f" aria-label="TrustRail mark"><use href="#i-shield-rails"/></svg>
+      <span class="brand__name">TrustRail</span>
+    </div>
+    <nav class="nav">
+      <a class="nav__item is-active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.8 2.2a2 2 0 0 0-1.6 0L2.6 6.1a1 1 0 0 0 0 1.8l8.6 3.9a2 2 0 0 0 1.6 0l8.6-3.9a1 1 0 0 0 0-1.8Z"/><path d="m22 12.2-9.2 4.2a2 2 0 0 1-1.6 0L2 12.2"/><path d="m22 17.2-9.2 4.2a2 2 0 0 1-1.6 0L2 17.2"/></svg>
+        Payment desk</a>
+      <a class="nav__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3 6.5 9 6.2 9-6.2"/></svg>
+        Inbox</a>
+      <a class="nav__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="7.6" r="3.2"/><path d="M6.6 19.5v-.8a5.4 5.4 0 0 1 10.8 0v.8"/><circle cx="5.2" cy="9.6" r="2.4"/><path d="M1.5 18.6v-.4a3.8 3.8 0 0 1 4.6-3.7"/><circle cx="18.8" cy="9.6" r="2.4"/><path d="M22.5 18.6v-.4a3.8 3.8 0 0 0-4.6-3.7"/></svg>
+        Suppliers</a>
+      <a class="nav__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6.5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7Z"/><path d="M14 2v5h5.5"/><path d="M8.5 13h7M8.5 17h7"/></svg>
+        Audit log</a>
+      <a class="nav__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Settings</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <!-- ===== верхняя панель ===== -->
+    <header class="topbar">
+      <div class="company" data-slot="company_name">Lantern &amp; Loom Imports</div>
+      <div class="env-wrap"><div class="env-badge" data-slot="environment_label">Airwallex sandbox · test money</div></div>
+      <div class="topbar__divider"></div>
+      <div class="balances">
+        <div class="bal bal--usd"><span class="bal__ccy">USD</span><span class="bal__amt" data-slot="balance_usd">10,000,000.00</span></div>
+        <div class="bal bal--eur"><span class="bal__ccy">EUR</span><span class="bal__amt" data-slot="balance_eur">9,999,994.00</span></div>
+        <div class="bal bal--gbp"><span class="bal__ccy">GBP</span><span class="bal__amt" data-slot="balance_gbp">10,000,000.00</span></div>
+        <div class="bal bal--cny"><span class="bal__ccy">CNY</span><span class="bal__amt" data-slot="balance_cny">10,000,000.00</span></div>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- ===== герой: STOPPED ===== -->
+      <section class="card hero hs only-stopped" aria-label="Stopped payment">
+        <div class="hero__band">
+          <svg class="hero__warn" viewBox="0 0 24 22"><use href="#i-warn" transform="translate(0,-1.4)"/></svg>
+          <h1 class="hero__title"><span data-slot="stop_supplier_name">Pennine Weaving Ltd</span>&nbsp;·&nbsp;Invoice&nbsp;<span data-slot="stop_invoice_id">PW-2291</span>&nbsp;·&nbsp;<span data-slot="stop_amount">£8,250.00</span>&nbsp;·&nbsp;<span data-slot="stop_method">Local transfer</span>&nbsp;·<span class="status-pill-lg" data-slot="stop_status">Stopped</span></h1>
+          <p class="hero__sub">Email ‘<span data-slot="stop_email_subject">Our bank details have moved</span>’ received <span data-slot="stop_email_received_at">Nov 9, 2026 · 10:42</span> from <span data-slot="stop_email_from">accounts@pennine-weavlng.co.uk</span> (on file: <span data-slot="stop_domain_on_file">pennine-weaving.co.uk</span>)</p>
+        </div>
+        <div class="hero__body">
+          <div class="col-left">
+            <div class="agent-msg">
+              <div class="spark-tile"><svg width="28" height="28" viewBox="0 0 32 32"><use href="#i-spark"/></svg></div>
+              <p class="msg-box" data-slot="stop_agent_summary">I stopped the <span data-slot="stop_agent_summary_amount">£8,250.00</span> transfer: the email came from a lookalike<br>domain and asks us to pay an account we have never paid.</p>
+            </div>
+            <div class="cmp">
+              <div class="cmp__card cmp__card--file">
+                <div class="cmp__hdr"><svg><use href="#i-check-circle"/></svg><b style="font-weight:650">On file</b>&nbsp;· verified&nbsp;<span data-slot="onfile_verified_date">Oct 22, 2026</span></div>
+                <div class="cmp__rows">
+                  <div class="cmp__row"><span class="cmp__lbl">Domain</span><span class="cmp__val" data-slot="onfile_domain">pennine-<span class="mark mark--ok">weaving</span>.co.uk</span></div>
+                  <div class="cmp__row"><span class="cmp__lbl">Bank</span><span class="cmp__val" data-slot="onfile_bank">Barclays</span></div>
+                  <div class="cmp__row"><span class="cmp__lbl">Sort code</span><span class="cmp__val" data-slot="onfile_sort_code">20-45-77</span></div>
+                  <div class="cmp__row"><span class="cmp__lbl">Account</span><span class="cmp__val" data-slot="onfile_account">••••3816</span></div>
+                </div>
+              </div>
+              <div class="cmp__card cmp__card--email">
+                <div class="cmp__hdr"><svg><use href="#i-warn"/></svg>In the email</div>
+                <div class="cmp__rows">
+                  <div class="cmp__row"><span class="cmp__lbl">Domain</span><span class="cmp__val" data-slot="email_domain">pennine-<span class="mark mark--bad">weavlng</span>.co.uk</span></div>
+                  <div class="cmp__row"><span class="cmp__lbl">Bank</span><span class="cmp__val val-pill" data-slot="email_bank">Monzo</span></div>
+                  <div class="cmp__row"><span class="cmp__lbl">Sort code</span><span class="cmp__val val-pill" data-slot="email_sort_code">04-00-04</span></div>
+                  <div class="cmp__row"><span class="cmp__lbl">Account</span><span class="cmp__val val-pill" data-slot="email_account">••••9921</span></div>
+                </div>
+              </div>
+            </div>
+            <p class="foot"><svg><use href="#i-info"/></svg>The agent extracted these fields. Policy code stopped the transfer.</p>
+          </div>
+          <div class="vdiv vdiv1"></div>
+          <div class="signals">
+            <h2 class="signals__title">Agent signals</h2>
+            <ul class="signals__list">
+              <li class="signals__item"><span class="signals__icon"><svg><use href="#i-warn"/></svg></span><span data-slot="stop_signal_1">Lookalike domain: weavlng vs weaving</span></li>
+              <li class="signals__item"><span class="signals__icon"><svg><use href="#i-warn"/></svg></span><span data-slot="stop_signal_2">Reply-To differs from sender</span></li>
+              <li class="signals__item"><span class="signals__icon"><svg><use href="#i-warn"/></svg></span><span data-slot="stop_signal_3">Urgency: ‘pay today to avoid delay’</span></li>
+              <li class="signals__item"><span class="signals__icon"><svg><use href="#i-warn"/></svg></span><span data-slot="stop_signal_4">New account, never paid before</span></li>
+            </ul>
+          </div>
+          <div class="vdiv vdiv2"></div>
+          <div class="actions">
+            <button class="btn btn--primary" data-action="keep_hold">Keep on hold</button>
+            <button class="btn btn--secondary" data-action="verify_callback">Verify by phone callback</button>
+            <input class="btn btn--secondary tr-callback" type="text" maxlength="200" placeholder="Callback reference: who you called, when" aria-label="Callback reference" hidden>
+            <button class="btn btn--disabled" data-action="approve_new_details" disabled>Approve new details</button>
+            <p class="actions__note" aria-live="polite">needs a callback reference</p>
+            <button type="button" class="tr-link" data-action="reject_new_details" hidden>Reject new details</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== герой: CARD ===== -->
+      <section class="card hero hc only-card" aria-label="Card plan for new supplier">
+        <div class="hero__band">
+          <svg class="hero__warn" viewBox="0 0 24 22"><use href="#i-warn" transform="translate(0,-1.4)"/></svg>
+          <h1 class="hero__title"><span data-slot="card_supplier_name">Foshan Hongyu Ceramics</span><span class="sep">·</span>Invoice&nbsp;<span data-slot="card_invoice_id">HY-0417</span><span class="sep">·</span><span data-slot="card_amount">¥48,600.00</span><span class="sep">·</span><span data-slot="card_method">Single-use card</span><span class="sep">·</span><span class="ready" data-slot="card_status">Ready for approval</span></h1>
+          <p class="hero__sub" data-slot="card_note">New supplier, bank details not yet verified. The first payment goes on a single-use Airwallex card capped to this invoice: the supplier can take it, a fraudster cannot redirect it.</p>
+        </div>
+        <div class="hero__body">
+          <div class="agent-msg">
+            <div class="spark-tile"><svg width="28" height="28" viewBox="0 0 32 32"><use href="#i-spark"/></svg></div>
+            <p class="msg-box" data-slot="card_agent_summary">New supplier with unverified bank details: I prepared a single-use card<br>capped at <span data-slot="card_agent_summary_limit">¥50,058.00</span> for invoice HY-0417. Nothing is paid until you approve.</p>
+          </div>
+          <div class="vcard">
+            <img class="vcard__bg" src="card-tile-bg.png" alt="">
+            <svg class="vcard__mark" viewBox="0 0 36 40" style="color:#fff;--rail:#0e7262"><use href="#i-shield-rails"/></svg>
+            <span class="vcard__name">TrustRail</span>
+            <span class="vcard__num" data-slot="card_number_masked">•••• •••• •••• ••••</span>
+            <span class="vcard__caption">Single-use card · issued only after your approval</span>
+          </div>
+          <div class="vdiv vdiv1"></div>
+          <div class="limits">
+            <div class="limits__row" style="top:23.3px;left:-2.3px"><svg viewBox="0 0 29 27" fill="none" stroke="currentColor" stroke-width="2.1"><rect x="2" y="4" width="25" height="19" rx="3.5"/><path d="M2.5 10h24"/><circle cx="8" cy="17.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="13" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg></div>
+            <div class="limits__txt" style="top:11.7px;font-size:18.7px;font-weight:650;line-height:22.4px;white-space:nowrap">Limit <span data-slot="card_limit">¥50,058.00</span></div>
+            <div class="limits__txt" style="top:34.1px;font-size:15.1px;line-height:22.4px;color:#2d3343;white-space:nowrap">(invoice <span data-slot="card_invoice_base">¥48,600.00</span> + <span data-slot="card_fx_buffer">3%</span> FX buffer)</div>
+            <div class="lim-sep" style="top:69.3px"></div>
+            <div class="limits__row" style="top:82.1px;left:0px"><svg viewBox="0 0 24 28" style="width:24px;height:28px" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5.5" rx="9" ry="3.5"/><path d="M3 5.5v17c0 1.9 4 3.5 9 3.5s9-1.6 9-3.5v-17"/><path d="M3 11.2c0 1.9 4 3.5 9 3.5s9-1.6 9-3.5M3 16.9c0 1.9 4 3.5 9 3.5s9-1.6 9-3.5"/></svg></div>
+            <div class="limits__txt" style="top:83.6px;font-size:17.4px;font-weight:650;line-height:22px;white-space:nowrap">Currency: <span data-slot="card_currency">CNY</span> only</div>
+            <div class="lim-sep" style="top:123px"></div>
+            <div class="limits__row" style="top:131.6px;left:0px"><svg viewBox="0 0 24 30" style="width:24px;height:30px" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="13" width="19" height="15" rx="2.5"/><path d="M6.5 13V8.5a5.5 5.5 0 0 1 11 0V13"/><circle cx="12" cy="20.5" r="1.4" fill="currentColor" stroke="none"/></svg></div>
+            <div class="limits__txt" style="top:134.2px;font-size:16.2px;font-weight:550;line-height:22px;white-space:nowrap">One payment, then the <b style="font-weight:750">card closes</b></div>
+          </div>
+          <div class="vdiv vdiv2"></div>
+          <div class="checks">
+            <div class="checks__hdr">Checked in the Airwallex sandbox</div>
+            <div class="checks__row" style="top:46.3px">Amount over the limit →<span class="code" style="width:146.5px;margin-right:21.2px" data-slot="decline_over_limit">LIMIT_EXCEEDED</span></div>
+            <div class="checks__sep" style="top:84px"></div>
+            <div class="checks__row" style="top:88.8px">Other currency →<span class="code" style="width:222.5px" data-slot="decline_other_currency">CURRENCY_NOT_ALLOWED</span></div>
+            <div class="checks__sep" style="top:127px"></div>
+            <div class="checks__row" style="top:131.8px">Second charge →<span class="code" style="width:146.5px;margin-right:21.2px" data-slot="decline_second_charge">LIMIT_EXCEEDED</span></div>
+          </div>
+          <div class="vdiv vdiv3"></div>
+          <div class="actions">
+            <button class="btn btn--primary" data-action="approve_card">Approve card&nbsp;&nbsp;·&nbsp;&nbsp;<span data-slot="card_limit_button">¥50,058.00</span>&nbsp;limit</button>
+            <button class="btn btn--primary" data-action="pay_card" hidden>Pay with card&nbsp;&nbsp;·&nbsp;&nbsp;<span data-pay></span></button>
+            <button class="btn btn--disabled btn--issued" data-action="card_issued" disabled hidden>Card issued&nbsp;&nbsp;·&nbsp;&nbsp;<span data-issued></span>&nbsp;limit</button>
+            <button class="btn btn--secondary" data-action="use_deposit">Use deposit instead</button>
+            <button class="btn btn--hold" data-action="hold">Hold</button>
+            <p class="actions__note tr-card-note" aria-live="polite"></p>
+          </div>
+          <p class="info-bar"><svg><use href="#i-info"/></svg>Supplier does not take cards? Deposit&nbsp;<span data-slot="deposit_amount">¥14,580.00</span>&nbsp;(<span data-slot="deposit_pct">30%</span>) to a validated account, balance after shipment proof.</p>
+          <p class="foot2">Approval is bound to amount, currency, supplier and invoice (plan <span data-slot="plan_id">7f3a…c21</span>). The agent prepared the plan; policy code set the limit.</p>
+        </div>
+      </section>
+
+      <!-- ===== ряд 2 ===== -->
+      <div class="row2">
+        <section class="card tl" aria-label="Today's payments rail timeline">
+          <h2 class="sec-title">Today’s payments · rail timeline</h2>
+          <div class="rail">
+            <svg class="rail__lines" width="849" height="50" viewBox="0 0 849 50">
+              <line x1="20.2" y1="25" x2="98" y2="25" stroke="#eceef2" stroke-width="2.2"/>
+              <line x1="109" y1="25" x2="486" y2="25" stroke="#19785d" stroke-width="3.4"/>
+              <line x1="527" y1="25" x2="545" y2="25" stroke="#c9790f" stroke-width="2.6"/>
+              <line x1="549" y1="25" x2="821" y2="25" stroke="#b3b6c0" stroke-width="2.2" stroke-dasharray="5.6 4.5"/>
+            </svg>
+            <svg class="node" style="left:109.1px" width="25" height="25" viewBox="0 0 25 25"><circle cx="12.5" cy="12.5" r="11.6" fill="#05694f"/><path d="m7.6 12.8 3.3 3.2 6.3-6.6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="node" style="left:307.1px" width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.6" fill="#fff" stroke="#0a46d2" stroke-width="3.4"/></svg>
+            <div class="barrier"><svg width="32" height="28" viewBox="0 0 32 28"><rect x="3.4" y="1.5" width="4.2" height="25" rx="1.6" fill="#c3700b"/><rect x="11.4" y="1.5" width="4.2" height="25" rx="1.6" fill="#c3700b"/><rect x="19.4" y="1.5" width="4.2" height="25" rx="1.6" fill="#c3700b"/><rect x="27.2" y="1.5" width="3.6" height="25" rx="1.6" fill="#c3700b"/></svg></div>
+            <svg class="node" style="left:710.8px" width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.6" fill="#fff" stroke="#80838e" stroke-width="3.2"/></svg>
+          </div>
+          <div class="tl-cols">
+            <div class="tlc tlc--1"><span class="tlc__name" data-slot="tl_1_supplier">Atelier Brandt</span><span class="tlc__amt tnum" data-slot="tl_1_amount">€12,400.00</span><span class="pill pill--green" data-slot="tl_1_status">Sent, processing</span></div>
+            <div class="tlc tlc--2"><span class="tlc__name" data-slot="tl_2_supplier">Foshan Hongyu</span><span class="tlc__amt tnum" data-slot="tl_2_amount">¥48,600.00</span><span class="pill pill--blue" data-slot="tl_2_status">Ready for approval</span></div>
+            <div class="tlc tlc--3"><span class="tlc__name" data-slot="tl_3_supplier">Pennine Weaving</span><span class="tlc__amt tnum" data-slot="tl_3_amount">£8,250.00</span><span class="pill pill--red" data-slot="tl_3_status">Stopped</span></div>
+            <div class="tlc tlc--4"><span class="tlc__name" data-slot="tl_4_supplier">Marlow Glassworks</span><span class="tlc__amt"><span class="tnum" data-slot="tl_4_amount">£1,800.00</span> deposit</span><span class="tlc__sub">of <span class="tnum" data-slot="tl_4_total">£6,000.00</span></span><span class="pill pill--gray" data-slot="tl_4_status">Awaiting shipment proof</span></div>
+          </div>
+        </section>
+
+        <section class="card ladder" aria-label="Supplier trust ladder">
+          <h2 class="sec-title">Supplier trust ladder · money at stake</h2>
+          <div class="chevrons">
+            <div class="chev chev--new">
+              <svg class="only-stopped" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9.5" cy="7.5" r="4"/><path d="M2.5 21v-1.5a5 5 0 0 1 5-5h4a5 5 0 0 1 3 1"/><path d="M19 13.5v7M15.5 17h7"/></svg>
+              <svg class="only-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:25px;height:25px"><circle cx="12" cy="12" r="10.2"/><rect x="6.6" y="8.4" width="10.8" height="7.6" rx="1.6"/><path d="M6.8 11h10.4"/></svg>
+              New</div>
+            <div class="chev chev--ver"><svg><use href="#i-check-circle"/></svg>Verified</div>
+            <div class="chev chev--tru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m8.8 12.2 2.3 2.3 4.3-4.5"/></svg>Trusted</div>
+          </div>
+          <div class="ld-item ld-foshan">
+            <svg class="ld-item__icon" viewBox="0 0 24 19" fill="none" stroke="currentColor" stroke-width="2"><rect x="1.5" y="1.5" width="21" height="16" rx="2.5"/><path d="M2 6.5h20"/><circle cx="6.5" cy="12.5" r="1" fill="currentColor"/><circle cx="10.5" cy="12.5" r="1" fill="currentColor"/></svg>
+            <div><div class="ld-item__name" data-slot="ladder_new_1_supplier">Foshan Hongyu</div><div class="ld-item__amt tnum" data-slot="ladder_new_1_amount">¥48,600.00</div></div>
+          </div>
+          <div class="ld-item ld-pennine only-stopped">
+            <svg><use href="#i-warn"/></svg>
+            <div><div class="ld-item__name" data-slot="ladder_new_2_supplier">Pennine Weaving</div><div class="ld-item__amt"><b class="tnum" data-slot="ladder_new_2_amount">£8,250.00</b> (<span data-slot="ladder_new_2_note">trust revoked</span>)</div></div>
+          </div>
+          <div class="ld-item ld-marlow">
+            <div class="ld-item__name" data-slot="ladder_verified_1_supplier">Marlow Glassworks</div>
+            <div class="ld-item__amt"><span class="tnum" data-slot="ladder_verified_1_amount">£1,800.00</span> deposit</div>
+            <div class="ld-item__sub">of <span class="tnum" data-slot="ladder_verified_1_total">£6,000.00</span></div>
+          </div>
+          <div class="ld-item ld-atelier">
+            <div class="ld-item__name" data-slot="ladder_trusted_1_supplier">Atelier Brandt</div>
+            <div class="ld-item__amt tnum" data-slot="ladder_trusted_1_amount">€12,400.00</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== ряд 3 ===== -->
+      <div class="row3">
+        <section class="card queue" aria-label="Today's payment queue">
+          <h2 class="sec-title">Today’s payment queue</h2>
+          <div class="qtable" role="table">
+            <div class="qgrid qhead" role="row"><span>Supplier</span><span>Country</span><span>Invoice</span><span>Amount</span><span>Method</span><span>Trust level</span><span>Status</span></div>
+            <div class="qrows">
+              <div class="qgrid qrow qrow--1 q-foshan" role="row">
+                <span class="q-name" data-slot="q_1_supplier">Foshan Hongyu Ceramics</span><span class="q-ctry" data-slot="q_1_country">CN</span><span class="q-inv" data-slot="q_1_invoice">HY-0417</span><span class="q-amt tnum" data-slot="q_1_amount">¥48,600.00</span>
+                <span class="q-meth" data-slot="q_1_method">Single-use card,<br>limit <span data-slot="q_1_card_limit">¥50,058.00</span></span>
+                <span><span class="qpill qpill--new" data-slot="q_1_trust">New</span></span>
+                <span class="qstat qstat--blue"><i></i><span data-slot="q_1_status">Ready for approval</span></span>
+              </div>
+              <div class="qgrid qrow qrow--2" role="row">
+                <span class="q-name" data-slot="q_2_supplier">Atelier Brandt GmbH</span><span class="q-ctry" data-slot="q_2_country">DE</span><span class="q-inv" data-slot="q_2_invoice">AB-1180</span><span class="q-amt tnum" data-slot="q_2_amount">€12,400.00</span>
+                <span class="q-meth" data-slot="q_2_method">Local transfer (SEPA)</span>
+                <span><span class="qpill qpill--trusted" data-slot="q_2_trust">Trusted</span></span>
+                <span class="qstat qstat--green"><i></i><span data-slot="q_2_status">Sent, processing</span></span>
+              </div>
+              <div class="qgrid qrow qrow--3 q-pennine" role="row">
+                <span class="q-name" data-slot="q_3_supplier">Pennine Weaving Ltd</span><span class="q-ctry" data-slot="q_3_country">GB</span><span class="q-inv" data-slot="q_3_invoice">PW-2291</span><span class="q-amt tnum" data-slot="q_3_amount">£8,250.00</span>
+                <span class="q-meth" data-slot="q_3_method">Local transfer</span>
+                <span><span class="qpill qpill--revoked" data-slot="q_3_trust">Trust revoked</span></span>
+                <span class="qstat qstat--red"><i></i><span data-slot="q_3_status">Stopped</span></span>
+              </div>
+              <div class="qgrid qrow qrow--4" role="row">
+                <span class="q-name" data-slot="q_4_supplier">Marlow Glassworks</span><span class="q-ctry" data-slot="q_4_country">GB</span><span class="q-inv" data-slot="q_4_invoice">MG-0093</span>
+                <span class="q-amt q-amt-2l"><span class="tnum" data-slot="q_4_amount">£1,800.00</span><small>deposit of <span class="tnum" data-slot="q_4_total">£6,000.00</span></small></span>
+                <span class="q-meth q-meth--sm" data-slot="q_4_method">Deposit to verified account,<br>balance after shipment</span>
+                <span><span class="qpill qpill--verified" data-slot="q_4_trust">Verified</span></span>
+                <span class="qstat qstat--orange"><i></i><span data-slot="q_4_status">Awaiting shipment proof</span></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card activity" aria-label="Agent activity">
+          <h2 class="sec-title">Agent activity<small>· latest 4 supplier emails</small></h2>
+          <ul class="act-list">
+            <li class="act-row"><span class="act-row__icon"><svg viewBox="0 0 24 20"><use href="#i-mail"/></svg></span><span class="act-row__time" data-slot="act_1_time">10:42</span><span class="act-row__text" data-slot="act_1_text">Pennine Weaving: bank details email, transfer stopped</span></li>
+            <li class="act-row"><span class="act-row__icon"><svg viewBox="0 0 24 20"><use href="#i-mail"/></svg></span><span class="act-row__time" data-slot="act_2_time">09:58</span><span class="act-row__text" data-slot="act_2_text">Marlow Glassworks: shipment notice, proof requested</span></li>
+            <li class="act-row"><span class="act-row__icon"><svg viewBox="0 0 24 20"><use href="#i-mail"/></svg></span><span class="act-row__time" data-slot="act_3_time">09:31</span><span class="act-row__text" data-slot="act_3_text">Foshan Hongyu: invoice HY-0417, card plan prepared</span></li>
+            <li class="act-row"><span class="act-row__icon"><svg viewBox="0 0 24 20"><use href="#i-mail"/></svg></span><span class="act-row__time" data-slot="act_4_time">08:15</span><span class="act-row__text" data-slot="act_4_text">Atelier Brandt: invoice AB-1180, transfer sent</span></li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // Session token arrives only in the URL fragment (#t=...) of the link printed in the terminal.
+  // It stays in this closure and is removed from the address bar at once.
+  function hashParams() { return new URLSearchParams(location.hash.replace(/^#/, '')); }
+  var token = hashParams().get('t') || '';
+  (function () {
+    var h = hashParams(); if (!h.has('t')) { return; } h.delete('t');
+    history.replaceState(null, '', location.pathname + location.search + (h.toString() ? '#' + h.toString() : ''));
+  })();
+  var ACTOR = 'Payment desk';
+  var X = [109.1, 307.1, 506.1, 710.8];
+  var C = null, selected = null;
+  var body = document.body;
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function slot(tag, cls, name, text) { var e = el(tag, cls, text == null ? '' : text); e.setAttribute('data-slot', name); return e; }
+  function svgUse(id, cls, vb) {
+    var ns = 'http://www.w3.org/2000/svg', s = document.createElementNS(ns, 'svg'), u = document.createElementNS(ns, 'use');
+    if (cls) s.setAttribute('class', cls);
+    if (vb) s.setAttribute('viewBox', vb);
+    u.setAttribute('href', '#' + id); s.appendChild(u); return s;
+  }
+  function html(e, markup) { e.innerHTML = markup; return e; }
+  function api(method, path, data) {
+    var headers = {'Content-Type': 'application/json'}; if (token) { headers['X-TrustRail-Token'] = token; }
+    return fetch(path, {method: method, cache: 'no-store', headers: headers, body: data ? JSON.stringify(data) : undefined})
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok) { throw new Error(j.error || ('HTTP ' + r.status)); } return j; }); });
+  }
+  function setText(name, value) {
+    $$('[data-slot="' + name + '"]').forEach(function (e) { if (!e.querySelector('[data-slot]')) { e.textContent = value == null ? '' : value; } });
+  }
+  function lines(e, parts) {  // text with \n as <br>, safe
+    e.textContent = '';
+    String(parts).split('\n').forEach(function (p, i) { if (i) e.appendChild(el('br')); e.appendChild(document.createTextNode(p)); });
+  }
+  function summary(box, name, s) {
+    box.textContent = '';
+    lines(box, s.pre); var tmp = el('span'); tmp.setAttribute('data-slot', name); tmp.textContent = s.amount; box.appendChild(tmp);
+    var rest = el('span'); lines(rest, s.post); while (rest.firstChild) { box.appendChild(rest.firstChild); }
+  }
+  function marks(e, parts, cls) { e.textContent = ''; e.appendChild(document.createTextNode(parts[0])); e.appendChild(el('span', 'mark ' + cls, parts[1])); e.appendChild(document.createTextNode(parts[2])); }
+
+  function renderQueue(rows) {
+    var box = $('.qrows'); box.textContent = '';
+    rows.slice(0, 4).forEach(function (r, i) {
+      var n = i + 1, row = el('div', 'qgrid qrow qrow--' + n);
+      row.setAttribute('role', 'row'); row.dataset.invoice = r.invoice;
+      if (C.heroes[r.invoice]) { row.dataset.hero = '1'; row.addEventListener('click', function () { select(r.invoice, true); }); }
+      row.appendChild(slot('span', 'q-name', 'q_' + n + '_supplier', r.supplier));
+      row.appendChild(slot('span', 'q-ctry', 'q_' + n + '_country', r.country));
+      row.appendChild(slot('span', 'q-inv', 'q_' + n + '_invoice', r.invoice_no));
+      if (r.total) {
+        var a = el('span', 'q-amt q-amt-2l'); a.appendChild(slot('span', 'tnum', 'q_' + n + '_amount', r.amount));
+        var sm = el('small', null, 'deposit of '); sm.appendChild(slot('span', 'tnum', 'q_' + n + '_total', r.total)); a.appendChild(sm); row.appendChild(a);
+      } else { row.appendChild(slot('span', 'q-amt tnum', 'q_' + n + '_amount', r.amount)); }
+      var m = slot('span', 'q-meth' + (r.route === 'DEPOSIT' ? ' q-meth--sm' : ''), 'q_' + n + '_method');
+      if (r.card_limit) { m.appendChild(document.createTextNode('Single-use card,')); m.appendChild(el('br')); m.appendChild(document.createTextNode('limit '));
+        m.appendChild(slot('span', null, 'q_' + n + '_card_limit', r.card_limit)); } else { lines(m, r.method.join('\n')); }
+      row.appendChild(m);
+      var t = el('span'); t.appendChild(slot('span', 'qpill qpill--' + r.trust_class, 'q_' + n + '_trust', r.trust)); row.appendChild(t);
+      var st = el('span', 'qstat qstat--' + r.status_class); st.appendChild(el('i')); st.appendChild(slot('span', null, 'q_' + n + '_status', r.status)); row.appendChild(st);
+      box.appendChild(row);
+    });
+  }
+  var NODES = {
+    check: '<svg class="node" width="25" height="25" viewBox="0 0 25 25"><circle cx="12.5" cy="12.5" r="11.6" fill="#05694f"/><path d="m7.6 12.8 3.3 3.2 6.3-6.6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    ring_blue: '<svg class="node" width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.6" fill="#fff" stroke="#0a46d2" stroke-width="3.4"/></svg>',
+    ring_gray: '<svg class="node" width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.6" fill="#fff" stroke="#80838e" stroke-width="3.2"/></svg>',
+    barrier: '<div class="barrier"><svg width="32" height="28" viewBox="0 0 32 28"><rect x="3.4" y="1.5" width="4.2" height="25" rx="1.6" fill="#c3700b"/><rect x="11.4" y="1.5" width="4.2" height="25" rx="1.6" fill="#c3700b"/><rect x="19.4" y="1.5" width="4.2" height="25" rx="1.6" fill="#c3700b"/><rect x="27.2" y="1.5" width="3.6" height="25" rx="1.6" fill="#c3700b"/></svg></div>'
+  };
+  function renderTimeline(rows) {
+    var cols = $('.tl-cols'), rail = $('.rail'); cols.textContent = '';
+    $$('.node, .barrier', rail).forEach(function (n) { n.remove(); });
+    rows.slice(0, 4).forEach(function (r, i) {
+      var n = i + 1, c = el('div', 'tlc tlc--' + n); c.dataset.invoice = r.invoice;
+      if (C.heroes[r.invoice]) { c.dataset.hero = '1'; c.addEventListener('click', function () { select(r.invoice, true); }); }
+      c.appendChild(slot('span', 'tlc__name', 'tl_' + n + '_supplier', r.short));
+      if (r.total) {
+        var a = el('span', 'tlc__amt'); a.appendChild(slot('span', 'tnum', 'tl_' + n + '_amount', r.amount)); a.appendChild(document.createTextNode(' deposit')); c.appendChild(a);
+        var sub = el('span', 'tlc__sub', 'of '); sub.appendChild(slot('span', 'tnum', 'tl_' + n + '_total', r.total)); c.appendChild(sub);
+      } else { c.appendChild(slot('span', 'tlc__amt tnum', 'tl_' + n + '_amount', r.amount)); }
+      c.appendChild(slot('span', 'pill pill--' + r.pill_class, 'tl_' + n + '_status', r.status));
+      cols.appendChild(c);
+      var holder = el('div'); html(holder, NODES[r.node] || NODES.ring_gray);
+      var node = holder.firstChild;
+      if (r.node === 'barrier') { node.style.left = (X[i] - 21.8) + 'px'; } else { node.style.left = X[i] + 'px'; }
+      rail.appendChild(node);
+    });
+  }
+  var CARD_ICON = '<svg class="ld-item__icon" viewBox="0 0 24 19" fill="none" stroke="currentColor" stroke-width="2"><rect x="1.5" y="1.5" width="21" height="16" rx="2.5"/><path d="M2 6.5h20"/><circle cx="6.5" cy="12.5" r="1" fill="currentColor"/><circle cx="10.5" cy="12.5" r="1" fill="currentColor"/></svg>';
+  function renderLadder(l) {
+    var sec = $('.ladder'); $$('.ld-item', sec).forEach(function (n) { n.remove(); });
+    var it, d, w, amt;
+    if ((it = l.new_1)) {
+      d = html(el('div', 'ld-item ld-foshan'), CARD_ICON); w = el('div');
+      w.appendChild(slot('div', 'ld-item__name', 'ladder_new_1_supplier', it.supplier)); w.appendChild(slot('div', 'ld-item__amt tnum', 'ladder_new_1_amount', it.amount));
+      d.appendChild(w); sec.appendChild(d);
+    }
+    if ((it = l.new_2)) {
+      d = el('div', 'ld-item ld-pennine only-stopped'); d.appendChild(svgUse('i-warn')); w = el('div');
+      w.appendChild(slot('div', 'ld-item__name', 'ladder_new_2_supplier', it.supplier));
+      amt = el('div', 'ld-item__amt'); amt.appendChild(slot('b', 'tnum', 'ladder_new_2_amount', it.amount)); amt.appendChild(document.createTextNode(' ('));
+      amt.appendChild(slot('span', null, 'ladder_new_2_note', it.note)); amt.appendChild(document.createTextNode(')')); w.appendChild(amt); d.appendChild(w); sec.appendChild(d);
+    }
+    if ((it = l.verified_1)) {
+      d = el('div', 'ld-item ld-marlow'); d.appendChild(slot('div', 'ld-item__name', 'ladder_verified_1_supplier', it.supplier));
+      amt = el('div', 'ld-item__amt'); amt.appendChild(slot('span', 'tnum', 'ladder_verified_1_amount', it.amount));
+      if (it.total) { amt.appendChild(document.createTextNode(' deposit')); d.appendChild(amt);
+        var sub = el('div', 'ld-item__sub', 'of '); sub.appendChild(slot('span', 'tnum', 'ladder_verified_1_total', it.total)); d.appendChild(sub);
+      } else { d.appendChild(amt); }
+      sec.appendChild(d);
+    }
+    if ((it = l.trusted_1)) {
+      d = el('div', 'ld-item ld-atelier'); d.appendChild(slot('div', 'ld-item__name', 'ladder_trusted_1_supplier', it.supplier));
+      d.appendChild(slot('div', 'ld-item__amt tnum', 'ladder_trusted_1_amount', it.amount)); sec.appendChild(d);
+    }
+  }
+  function renderActivity(rows, title) {
+    var ul = $('.act-list'); ul.textContent = '';
+    $('.activity .sec-title small').textContent = '· ' + title;
+    rows.slice(0, 4).forEach(function (a, i) {
+      var li = el('li', 'act-row'), ic = el('span', 'act-row__icon'); ic.appendChild(svgUse('i-mail', null, '0 0 24 20')); li.appendChild(ic);
+      li.appendChild(slot('span', 'act-row__time', 'act_' + (i + 1) + '_time', a.time));
+      li.appendChild(slot('span', 'act-row__text', 'act_' + (i + 1) + '_text', a.text)); ul.appendChild(li);
+    });
+  }
+  function note(scope, text, kind) {
+    var n = $(scope === 'card' ? '.hc .tr-card-note' : '.hs .actions__note');
+    n.textContent = text; n.title = text; n.classList.remove('tr-err', 'tr-ok'); if (kind) { n.classList.add(kind); }
+  }
+  function btn(action) { return $('[data-action="' + action + '"]'); }
+  var CHECK_LABELS = null;
+  function checkRows(rows) {  // this card's recorded sandbox checks (h.check_rows) replace the design's measured rows
+    var dom = $$('.checks__row');
+    if (!CHECK_LABELS) { CHECK_LABELS = dom.map(function (r) { return r.firstChild.textContent; }); }
+    dom.forEach(function (r, i) {
+      var row = rows && rows[i];
+      r.style.visibility = rows && !row ? 'hidden' : '';
+      r.firstChild.textContent = row ? row.label + ' →' : CHECK_LABELS[i];
+      $('.code', r).classList.toggle('code--ok', !!(row && row.ok));
+      r.title = row ? row.amount + ' → ' + row.code : '';
+    });
+  }
+  function renderHero(h) {
+    body.dataset.state = h.state;
+    Object.keys(h.slots).forEach(function (k) { setText(k, h.slots[k]); });
+    if (h.state === 'stopped') {
+      summary($('[data-slot="stop_agent_summary"]'), 'stop_agent_summary_amount', h.summary);
+      marks($('[data-slot="onfile_domain"]'), h.domain_marks.onfile, 'mark--ok');
+      marks($('[data-slot="email_domain"]'), h.domain_marks.email, 'mark--bad');
+      var ul = $('.signals__list'); ul.textContent = '';
+      h.signals.forEach(function (t, i) {
+        var li = el('li', 'signals__item'), ic = el('span', 'signals__icon'); ic.appendChild(svgUse('i-warn')); li.appendChild(ic);
+        li.appendChild(slot('span', null, 'stop_signal_' + (i + 1), t)); ul.appendChild(li);
+      });
+      $('.tr-callback').hidden = true; btn('verify_callback').hidden = false; btn('reject_new_details').hidden = true;
+      $('.tr-callback').value = ''; refreshApproveNew(); note('stopped', 'needs a callback reference');
+    } else {
+      summary($('[data-slot="card_agent_summary"]'), 'card_agent_summary_limit', h.summary);
+      // h.actions (view model) decides which buttons a person can use; the primary slot shows approve, pay or "Card issued".
+      var s = h.invoice_state, a = h.actions || {}, approve = btn('approve_card'), pay = btn('pay_card'), issued = btn('card_issued');
+      approve.hidden = !!(a.pay || a.issued); pay.hidden = !a.pay; issued.hidden = !a.issued;
+      approve.disabled = !a.approve; pay.disabled = !a.pay; btn('use_deposit').disabled = !a.deposit; btn('hold').disabled = !a.hold;
+      $('[data-pay]').textContent = h.slots.card_limit; $('[data-issued]').textContent = h.slots.card_limit;
+      $('.checks__hdr').textContent = h.checks_title || C.notes.checks_title;
+      checkRows(h.check_rows);
+      note('card', s === 'SUBMITTED' ? C.notes.card_issued : '');
+    }
+    readOnly();
+  }
+  function refreshApproveNew() {
+    var h = C.heroes[selected], ref = $('.tr-callback').value.trim(), b = btn('approve_new_details');
+    var ok = !!(h && h.pending_bank_change && ref);
+    b.disabled = !ok; b.classList.toggle('tr-ready', ok); btn('reject_new_details').disabled = !ref;
+  }
+  function readOnly() {
+    if (!C.replayed) { return; }
+    $$('[data-action]').forEach(function (b) { b.disabled = true; b.title = 'Replay is read-only'; });
+    $('.tr-callback').disabled = true;
+  }
+  function select(id, push) {
+    var h = C.heroes[id]; if (!h) { return; }
+    selected = id; renderHero(h);
+    $$('.qrow').forEach(function (r) { r.classList.remove('q-pennine', 'q-foshan'); r.removeAttribute('aria-selected'); });
+    var row = $('.qrow[data-invoice="' + CSS.escape(id) + '"]');
+    if (row) { row.classList.add(h.state === 'card' ? 'q-foshan' : 'q-pennine'); row.setAttribute('aria-selected', 'true'); }
+    if (push) { var h = hashParams(); h.set('inv', id); history.replaceState(null, '', location.pathname + location.search + '#' + h.toString()); }
+  }
+  function render(c) {
+    C = c;
+    setText('company_name', c.slots.company_name); setText('environment_label', c.slots.environment_label);    ['usd', 'eur', 'gbp', 'cny'].forEach(function (k) { setText('balance_' + k, c.slots['balance_' + k]); });
+    $('.env-badge').title = c.replayed ? 'Recorded sandbox evidence (replayed: true)' : (c.demo ? 'Demo data, offline' : 'Live sandbox ledger');
+    body.classList.toggle('tr-replay', !!c.replayed);
+    body.classList.toggle('tr-demo', !!c.demo);
+    $('.checks__hdr').textContent = C.notes.checks_title;
+    renderQueue(c.queue); renderTimeline(c.timeline); renderLadder(c.ladder); renderActivity(c.activity, c.activity_title);
+    var fromHash = hashParams().get('inv') || '';
+    var id = c.heroes[selected] ? selected : (c.heroes[fromHash] ? fromHash : c.default_invoice);
+    $('.hs').hidden = false; $('.hc').hidden = false;
+    if (id) { select(id, false); } else { body.dataset.state = 'stopped'; $('.hs').hidden = true; }
+    body.classList.remove('tr-loading');
+  }
+  function load() {
+    return api('GET', '/api/state').then(function (s) { render(s.console); })
+      .catch(function (e) {
+        body.classList.remove('tr-loading'); body.classList.add('tr-failed');
+        $('.tr-fail').textContent = token ? 'Could not load /api/state: ' + e.message
+          : 'Open the console with the link printed in the terminal; it carries the session token.';
+      });
+  }
+  function act(scope, promise, okText) {
+    return promise.then(function () { return load().then(function () { if (okText) { note(scope, okText, 'tr-ok'); } }); })
+      .catch(function (e) { note(scope, e.message, 'tr-err'); });
+  }
+  function hero() { return C.heroes[selected]; }
+  btn('keep_hold').addEventListener('click', function () {
+    act('stopped', api('POST', '/api/keep-hold', {supplier: hero().supplier, actor: ACTOR, reason_ref: 'kept on hold from the payment desk'}), 'Hold kept, recorded in the audit log.');
+  });
+  btn('verify_callback').addEventListener('click', function () {
+    var h = hero(); btn('verify_callback').hidden = true; $('.tr-callback').hidden = false; btn('reject_new_details').hidden = false; $('.tr-callback').focus();
+    note('stopped', h.pending_bank_change ? 'enter the callback reference' : 'unregistered sender: only reject is possible');
+    refreshApproveNew();
+  });
+  $('.tr-callback').addEventListener('input', refreshApproveNew);
+  btn('approve_new_details').addEventListener('click', function () {
+    var h = hero(), ref = $('.tr-callback').value.trim();
+    act('stopped', api('POST', '/api/confirm-bank-details', {supplier: h.supplier, old_digest: h.pending_old_digest, new_digest: h.current_digest,
+        actor: ACTOR, callback_ref: ref}), 'New details confirmed. Validate them before the next payment.');
+  });
+  btn('reject_new_details').addEventListener('click', function () {
+    var h = hero(), ref = $('.tr-callback').value.trim();
+    var release = function () {  // exactly the causes listed on this panel, never others
+      return h.cause_ids.length ? api('POST', '/api/release-hold', {supplier: h.supplier, actor: ACTOR, cause_ids: h.cause_ids,
+          reason_ref: 'callback ' + ref + ': details in the email rejected, on-file details kept'}) : Promise.resolve();
+    };
+    var call = h.pending_bank_change
+      ? api('POST', '/api/reject-bank-details', {supplier: h.supplier, old_digest: h.pending_old_digest, new_digest: h.current_digest,
+          actor: ACTOR, reason_ref: ref}).then(release)
+      : release();
+    act('stopped', call, 'Rejected. On-file details kept; plan the payment again.');
+  });
+  btn('approve_card').addEventListener('click', function () {
+    var h = hero(); act('card', api('POST', '/api/approve', {invoice: h.invoice, digest: h.plan_digest, actor: ACTOR}), 'Approved. Paying is a separate step.');
+  });
+  btn('pay_card').addEventListener('click', function () {
+    var h = hero(); act('card', api('POST', '/api/execute', {invoice: h.invoice}), C.notes.sent);
+  });
+  btn('use_deposit').addEventListener('click', function () {
+    var h = hero(); act('card', api('POST', '/api/plan', {invoice: h.invoice, method: 'deposit'}), 'Re-planned as a deposit.');
+  });
+  btn('hold').addEventListener('click', function () {
+    var h = hero(); act('card', api('POST', '/api/hold', {supplier: h.supplier, actor: ACTOR, reason_ref: 'held from the payment desk'}), 'Supplier on hold.');
+  });
+  window.addEventListener('hashchange', function () {
+    var id = hashParams().get('inv') || ''; if (C && C.heroes[id]) { select(id, false); }
+  });
+  if (new URLSearchParams(location.search).get('review') === '1') {  // reviewer toggle, never in production view
+    var t = el('div', 'state-toggle'); t.setAttribute('role', 'group');
+    ['stopped', 'card'].forEach(function (s) {
+      var b = el('button', null, s === 'stopped' ? 'Stopped' : 'Card'); b.type = 'button'; b.setAttribute('data-set-state', s);
+      b.addEventListener('click', function () { var id = Object.keys(C.heroes).filter(function (k) { return C.heroes[k].state === s; })[0]; if (id) { select(id, true); } });
+      t.appendChild(b);
+    });
+    body.appendChild(t);
+  }
+  load();
+})();
+</script>
+</body>
+</html>
