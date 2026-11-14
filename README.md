@@ -4,7 +4,7 @@
 
 TrustRail has a deterministic payment core for the Airwallex sandbox, an agent that reads supplier email, an MCP entry point for AI agents, a local JSON API and a payment-desk console built from the chosen design. It cannot use the Airwallex production API.
 
-Video walkthrough (under five minutes): VIDEO_LINK
+Video walkthrough (under five minutes): https://youtu.be/Jfk6DOgNNbY
 
 ## For reviewers: what the Builder Guide asks, and where it is shown
 
@@ -19,7 +19,7 @@ TrustRail treats a single-use Airwallex card as the first rung of trust for a ne
 | "bind each approval to the amount, currency, counterparty, purchase terms, and evidence shown to the approver" | Approval binds the plan digest ("Guarantees and boundaries"); a tampered digest is refused and a bank change voids the approval (`tests/test_core.py`: `test_digest_tamper_and_duplicate_invoice_are_rejected`, `test_bank_change_revokes_trust_approval_and_stale_plan`) |
 | "Put sandbox-only simulation calls behind one interface" | One adapter pinned to `api-demo.airwallex.com`; any other base URL, production included, is rejected before a request (`trustrail/airwallex.py`) |
 | "Finish the demo with a financial action or an escalation to a person" | The run ends with sent payments and a stopped transfer waiting for a person: Keep on hold, or verify by phone callback ("Console") |
-| "A working demo, a short video walkthrough under five minutes, and a link to your repository with setup instructions" | Offline replay with no keys: [JUDGES.md](JUDGES.md); setup: "Run locally"; video: VIDEO_LINK |
+| "A working demo, a short video walkthrough under five minutes, and a link to your repository with setup instructions" | Offline replay with no keys: [JUDGES.md](JUDGES.md); setup: "Run locally"; video: https://youtu.be/Jfk6DOgNNbY |
 
 ## Evidence first
 
